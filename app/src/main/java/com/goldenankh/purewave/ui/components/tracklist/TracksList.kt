@@ -505,9 +505,8 @@ fun LazyTracks(
                         with(density) { selection.minX.dp.toPx() }, with(density) { selection.maxX.dp.toPx() }
                     )
 
-                    val currentXDp = contentToTracksDp(
-                        currentX, density.density
-                    )
+                    val currentXDp = currentX / density.density
+
                     updateAddSelectionCurrent(currentXDp)
                 }
 

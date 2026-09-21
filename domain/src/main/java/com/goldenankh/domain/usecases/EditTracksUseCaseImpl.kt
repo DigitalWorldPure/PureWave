@@ -586,10 +586,10 @@ class EditTracksUseCaseImpl @Inject constructor(
 
         if (item is TracksItem.Gap) {
 
-            val rowMinX = itemPositions.values.firstOrNull()?.startX
+            val rowMinX = track.items.firstOrNull()?.let { itemPositions[it.id]?.startX }
                 ?: return null
 
-            val rowMaxX = itemPositions.values.lastOrNull()?.endX
+            val rowMaxX = track.items.lastOrNull()?.let { itemPositions[it.id]?.endX }
                 ?: return null
 
             val start = contentX.coerceIn(
