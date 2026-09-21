@@ -44,8 +44,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.layout.LazyLayoutPrefetchState
-import androidx.compose.foundation.overscroll
-import androidx.compose.foundation.rememberOverscrollEffect
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -241,8 +239,6 @@ fun LazyTracks(
         )
         delta
     }
-
-    val overscrollEffect = rememberOverscrollEffect()
 
     val prefetchState = remember { LazyLayoutPrefetchState() }
 
