@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name" translatable="false">Pure Wave</string>
+    <string name="default_track_name">Track %s</string>
+</resources>
