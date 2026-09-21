@@ -29,12 +29,18 @@ import com.goldenankh.domain.model.AddSelection
 import com.goldenankh.domain.model.DragSession
 import com.goldenankh.domain.model.DropTarget
 import com.goldenankh.domain.model.TrackRow
-import com.goldenankh.domain.model.TracksData
 import com.goldenankh.domain.usecases.EditTracksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
+/**
+ * ViewModel for working with tracks
+ *
+ * Tracks are designed to hold audio or synthesized sound samples.
+ * They consist of rows containing blocks.
+ *
+ */
 @HiltViewModel
 class TracksListViewModel @Inject constructor(
     private val editTracksUseCase: EditTracksUseCase
@@ -44,10 +50,27 @@ class TracksListViewModel @Inject constructor(
     val moveBlockDropTargetState = MutableStateFlow<DropTarget?>(null)
     val addSelectionState = MutableStateFlow<AddSelection?>(null)
 
+    /**
+     * Updates tracks after editing (add, move or remove blocks)
+     *
+     * @param newTracks New tracks for the update
+     *
+     */
     fun updateTracks(newTracks: List<TrackRow>) {
         tracksDataState.value = newTracks.let (::updateTrackData)
     }
 
+    /**
+     * Adds a block at the specified coordinates to the
+     * track found based on the Y-coordinate
+     *
+     * @param positionX X-axis position for adding the block
+     * @param positionY Y-axis position for adding the block
+     * @param scrollX Current scroll position along the X-axis
+     * @param scrollY Current scroll position along the Y-axis
+     * @param blockWidth Width of the new block being added
+     *
+     */
     fun addBlockAt(
         positionX: Float,
         positionY: Float,
@@ -60,6 +83,14 @@ class TracksListViewModel @Inject constructor(
         result?.let(::updateTracks)
     }
 
+    /**
+     * Fills the selected area with blocks;
+     * if a block is encountered within the selected area,
+     * filling proceeds only up to the left edge of that block
+     *
+     * @param blockWidth Width of the new block being added
+     *
+     */
     fun addBlocksInSelection(
         blockWidth: Float
     ) {
@@ -78,6 +109,15 @@ class TracksListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Removes a block at the specified coordinates
+     *
+     * @param positionX X-axis position for block removal
+     * @param positionY Y-axis position for block removal
+     * @param scrollX Current scroll position along the X-axis
+     * @param scrollY Current scroll position along the Y-axis
+     *
+     */
     fun removeBlockAt(
         positionX: Float,
         positionY: Float,
@@ -88,6 +128,19 @@ class TracksListViewModel @Inject constructor(
         result?.let(::updateTracks)
     }
 
+    /**
+     * Moves a block within a track and to other
+     * positions of other tracks
+     *
+     * @param blockId ID of the block being moved
+     * @param sourceRowIndex Index of the track containing the block being moved
+     * @param targetRowIndex Index of the track to which the block is being moved
+     * @param targetGapIndex Gap index of the position where the block is being moved
+     * @param targetIsSourceBlockGap Evaluates to true if the block partially or fully
+     * intersects with the block at the current position
+     * @param dropOffset Offset for moving the block relative to the gap
+     *
+     */
     fun moveBlock(
         blockId: String,
         sourceRowIndex: Int,
@@ -101,6 +154,15 @@ class TracksListViewModel @Inject constructor(
         result?.let(::updateTracks)
     }
 
+    /**
+     * Calculating parameters for initiating block movement
+     *
+     * @param startPositionX Position X starts drag and drop
+     * @param startPositionY Position Y starts drag and drop
+     * @param scrollX Current scroll position along the X-axis
+     * @param scrollY Current scroll position along the Y-axis
+     *
+     */
     fun onStartDragBlock(
         startPositionX: Float,
         startPositionY: Float,
@@ -113,6 +175,13 @@ class TracksListViewModel @Inject constructor(
         moveBlockDropTargetState.value = null
     }
 
+    /**
+     * Processing drag-and-drop position while the block is moving
+     *
+     * @param dragAmountX X-coordinate of the current drag-and-drop operation
+     * @param dragAmountY Y-coordinate of the current drag-and-drop operation
+     *
+     */
     fun updateDragBlockSessionPosition(
         dragAmountX: Float,
         dragAmountY: Float
@@ -125,6 +194,13 @@ class TracksListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Processing drag-and-drop parameters [moveBlockDropTargetState] while the block is moving
+     *
+     * @param scrollX Current scroll position along the X-axis
+     * @param scrollY Current scroll position along the Y-axis
+     *
+     */
     fun updateDragAndDropBlock(
         scrollX: Float,
         scrollY: Float,
@@ -139,11 +215,26 @@ class TracksListViewModel @Inject constructor(
             positionX, positionY, currentTouchOffsetX, scrollX, scrollY)
     }
 
+    /**
+     * Once the block has been moved, the drag parameters
+     * need to be reset
+     *
+     */
     fun onEndDragBlock() {
         moveBlockDragSessionState.value = null
         moveBlockDropTargetState.value = null
     }
 
+    /**
+     * Before selecting an area via drag-and-drop to fill it with blocks,
+     * we calculate the initial parameters
+     *
+     * @param positionX Position X starts drag and drop
+     * @param positionY Position X starts drag and drop
+     * @param scrollX Current scroll position along the X-axis
+     * @param scrollY Current scroll position along the Y-axis
+     *
+     */
     fun startAddItemsBySelection(
         positionX: Float,
         positionY: Float,
@@ -155,6 +246,13 @@ class TracksListViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Processing drag-and-drop selection area parameters
+     *
+     * @param positionX X-position of the end of the selection area
+     * @param scrollX Current scroll position along the X-axis
+     *
+     */
     fun updateAddSelectionArea(
         positionX: Float,
         scrollX: Float
@@ -164,16 +262,33 @@ class TracksListViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handling drag-and-drop directly to a specific X-coordinate
+     *
+     * @param currentX X-axis position with the X-coordinate plus the scroll value
+     *
+     */
     fun updateAddSelectionCurrent(
         currentX: Float
     ) {
         addSelectionState.value = addSelectionState.value?.copy(currentX = currentX)
     }
 
+    /**
+     * After completing the selection for filling the area with blocks,
+     * we reset the parameters
+     *
+     */
     fun clearAddSelection() {
         addSelectionState.value = null
     }
 
+    /**
+     * Parameter processing and calculations for tracks
+     *
+     * @param newTracks New tracks for the update
+     *
+     */
     private fun updateTrackData(newTracks: List<TrackRow>) =
         editTracksUseCase.calculateTracksData(newTracks)
 }
