@@ -8,8 +8,19 @@ Already implemented:
 <img width="480" height="987" alt="draganddropblocks" src="https://github.com/user-attachments/assets/aabc0d1d-8c81-4e18-89ef-09929761c7ba" />
 
 5) Adding individual samples/blocks and filling a selected area
-6) Deleting samples/blocks
-7) Moving the playback cursor
+
+<img width="480" height="987" alt="addblocks" src="https://github.com/user-attachments/assets/bd48ec36-8386-49cb-9d7b-ef6e949cbbb6" />
+
+<img width="480" height="987" alt="fillingblocks" src="https://github.com/user-attachments/assets/cc87e74b-ce99-4a27-ab98-63f1b0cbdd23" />
+
+7) Deleting samples/blocks
+
+<img width="480" height="987" alt="removeblocks" src="https://github.com/user-attachments/assets/aaa4231b-3eb1-4984-8a27-b6121c0fd604" />
+
+9) Moving and set the playback cursor
+
+<img width="480" height="987" alt="setandmovingplaybackcursor" src="https://github.com/user-attachments/assets/27412be3-e65c-4aeb-b7e1-c70ce61bdf2a" />
+
 
 In development:
 1) Parameter selection when adding a sample
