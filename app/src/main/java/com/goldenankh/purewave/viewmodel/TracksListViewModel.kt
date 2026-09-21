@@ -49,20 +49,18 @@ class TracksListViewModel @Inject constructor(
     }
 
     fun addBlockAt(
-        tracksData: TracksData,
         positionX: Float,
         positionY: Float,
         scrollX: Float,
         scrollY: Float,
         blockWidth: Float
     ) {
-        val result = editTracksUseCase.addBlockAt(tracksData, positionX, positionY,
+        val result = editTracksUseCase.addBlockAt(tracksDataState.value, positionX, positionY,
             scrollX, scrollY, blockWidth)
         result?.let(::updateTracks)
     }
 
     fun addBlocksInSelection(
-        tracks: List<TrackRow>,
         blockWidth: Float
     ) {
         val selection = addSelectionState.value
@@ -73,7 +71,7 @@ class TracksListViewModel @Inject constructor(
             val endX = selection.currentX
             val rowIndex = selection.rowIndex
             val result = editTracksUseCase.addBlocksInSelection(
-                tracks, rowIndex, startX,
+                tracksDataState.value.tracks, rowIndex, startX,
                 endX, blockWidth
             )
             result.let(::updateTracks)
@@ -81,18 +79,16 @@ class TracksListViewModel @Inject constructor(
     }
 
     fun removeBlockAt(
-        tracksData: TracksData,
         positionX: Float,
         positionY: Float,
         scrollX: Float,
         scrollY: Float
     ) {
-        val result = editTracksUseCase.removeBlockAt(tracksData, positionX, positionY, scrollX, scrollY)
+        val result = editTracksUseCase.removeBlockAt(tracksDataState.value, positionX, positionY, scrollX, scrollY)
         result?.let(::updateTracks)
     }
 
     fun moveBlock(
-        tracks: List<TrackRow>,
         blockId: String,
         sourceRowIndex: Int,
         targetRowIndex: Int,
@@ -100,20 +96,19 @@ class TracksListViewModel @Inject constructor(
         targetIsSourceBlockGap: Boolean,
         dropOffset: Float,
     ) {
-        val result = editTracksUseCase.moveBlock(tracks, blockId, sourceRowIndex, targetRowIndex, targetGapIndex,
+        val result = editTracksUseCase.moveBlock(tracksDataState.value.tracks, blockId, sourceRowIndex, targetRowIndex, targetGapIndex,
                 targetIsSourceBlockGap, dropOffset)
         result?.let(::updateTracks)
     }
 
     fun onStartDragBlock(
-        tracksData: TracksData,
         startPositionX: Float,
         startPositionY: Float,
         scrollX: Float,
         scrollY: Float
     ) {
         moveBlockDragSessionState.value = editTracksUseCase.calculateInitialDragSession(
-            tracksData, startPositionX, startPositionY, scrollX, scrollY
+            tracksDataState.value, startPositionX, startPositionY, scrollX, scrollY
         )
         moveBlockDropTargetState.value = null
     }

@@ -182,11 +182,11 @@ fun LazyTracks(
     moveBlockDragSession: State<DragSession?>,
     moveBlockDropTarget: State<DropTarget?>,
     addSelectionState: State<AddSelection?>,
-    addBlockAt: (TracksData, Float, Float, Float, Float, Float) -> Unit,
-    addBlocksInSelection: (List<TrackRow>, Float) -> Unit,
-    removeBlockAt: (TracksData, Float, Float, Float, Float) -> Unit,
-    moveBlock: (List<TrackRow>, String, Int, Int, Int, Boolean, Float) -> Unit,
-    onStartDrag: (TracksData, Float, Float, Float, Float) -> Unit,
+    addBlockAt: (Float, Float, Float, Float, Float) -> Unit,
+    addBlocksInSelection: (Float) -> Unit,
+    removeBlockAt: (Float, Float, Float, Float) -> Unit,
+    moveBlock: (String, Int, Int, Int, Boolean, Float) -> Unit,
+    onStartDrag: (Float, Float, Float, Float) -> Unit,
     updateDragAndDropBlock: (Float, Float) -> Unit,
     updateDragSessionPosition: (Float, Float) -> Unit,
     onEndDragBlock: () -> Unit,
@@ -632,10 +632,7 @@ fun LazyTracks(
                                     state.scrollY, density.density
                                 )
 
-                                removeBlockAt(
-                                    tracksData, positionX, positionY,
-                                    scrollX, scrollY
-                                )
+                                removeBlockAt(positionX, positionY, scrollX, scrollY)
                             }
                         }
 
@@ -669,7 +666,6 @@ fun LazyTracks(
                                 )
 
                                 addBlockAt(
-                                    tracksData,
                                     positionX,
                                     positionY,
                                     scrollX,
@@ -738,7 +734,6 @@ fun LazyTracks(
                                     stopAddSelectionAutoScroll()
 
                                     addBlocksInSelection(
-                                        tracksData.tracks,
                                         newBlockWidth.value
                                     )
                                 },
@@ -780,7 +775,6 @@ fun LazyTracks(
                                     )
 
                                     onStartDrag(
-                                        tracksData,
                                         startPositionX,
                                         startPositionY,
                                         scrollX,
@@ -817,7 +811,6 @@ fun LazyTracks(
                                     val moveBlockDropTarget = moveBlockDropTarget.value
                                     if (moveBlockDragSession != null && moveBlockDropTarget != null) {
                                         moveBlock(
-                                            tracksData.tracks,
                                             moveBlockDragSession.block.id,
                                             moveBlockDragSession.sourceRowIndex,
                                             moveBlockDropTarget.rowIndex,
