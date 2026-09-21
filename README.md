@@ -33,3 +33,6 @@ Planned features:
 2) Note support for audio files
 3) Visual programming for sound wave synthesis and processing (amplitude/volume control, frequency modulation, echo filters, and other tools)
 4) Curve editor for use in visual programming
+5) Saving a project to a file and loading a project from a file
+6) Generating composed music file
+7) Backing synthesized sample/sound to a file
