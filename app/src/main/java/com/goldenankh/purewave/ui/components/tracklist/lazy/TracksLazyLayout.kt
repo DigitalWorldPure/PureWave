@@ -33,6 +33,8 @@ import com.goldenankh.domain.model.DragSession
 import com.goldenankh.domain.model.TracksData
 import com.goldenankh.domain.model.TracksItem
 import com.goldenankh.purewave.ui.components.tracklist.lazy.extensions.measureTracks
+import com.goldenankh.purewave.ui.components.tracklist.lazy.itemprovider.TracksItemProvider
+import com.goldenankh.purewave.ui.components.tracklist.lazy.scrollstate.LazyTracksState
 
 @Composable
 fun TracksLazyLayout(

@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.goldenankh.domain.model.TracksData
 import com.goldenankh.purewave.R
-import com.goldenankh.purewave.ui.components.tracklist.lazy.LazyTracksState
+import com.goldenankh.purewave.ui.components.tracklist.lazy.scrollstate.LazyTracksState
 import com.goldenankh.purewave.ui.components.tracklist.preview.TrackParametersPreviewProvider
 import kotlin.math.roundToInt
 

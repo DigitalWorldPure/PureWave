@@ -28,9 +28,6 @@ package com.goldenankh.purewave.ui.components.tracklist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.ScrollableDefaults
-import androidx.compose.foundation.gestures.awaitEachGesture
-import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.rememberScrollable2DState
@@ -61,10 +58,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.PointerInputChange
-import androidx.compose.ui.input.pointer.PointerInputScope
-import androidx.compose.ui.input.pointer.changedToUpIgnoreConsumed
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -76,15 +70,16 @@ import com.goldenankh.domain.model.DragSession
 import com.goldenankh.domain.model.DropTarget
 import com.goldenankh.domain.model.TracksData
 import com.goldenankh.domain.model.TracksItem
-import com.goldenankh.domain.model.TrackRow
 import com.goldenankh.purewave.viewmodel.TracksListViewModel
 import com.goldenankh.purewave.ui.components.tracklist.blocks.Block
 import com.goldenankh.purewave.ui.components.tracklist.blocks.Gap
 import com.goldenankh.purewave.ui.components.tracklist.controls.ControlPanel
 import com.goldenankh.purewave.ui.components.tracklist.dividers.drawTrackDividers
 import com.goldenankh.purewave.ui.components.tracklist.headers.TrackHeaders
-import com.goldenankh.purewave.ui.components.tracklist.lazy.LazyTracksState
+import com.goldenankh.purewave.ui.components.tracklist.lazy.scrollstate.LazyTracksState
 import com.goldenankh.purewave.ui.components.tracklist.lazy.TracksLazyLayout
+import com.goldenankh.purewave.ui.components.tracklist.lazy.pointerdetection.detectRemoveTap
+import com.goldenankh.purewave.ui.components.tracklist.lazy.scrollstate.rememberLazyTracksState
 import com.goldenankh.purewave.ui.components.tracklist.playbackindicator.PlaybackIndicator
 import com.goldenankh.purewave.ui.components.tracklist.scale.PlaybackIndicatorScaleHitArea
 import com.goldenankh.purewave.ui.components.tracklist.scale.drawTracksScale
@@ -94,82 +89,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
-import kotlin.math.sqrt
 import kotlin.time.Duration.Companion.milliseconds
-
-// ============================================================================
-// SCROLL STATE
-// ============================================================================
-
-@Composable
-fun rememberLazyTracksState(): LazyTracksState = remember { LazyTracksState() }
-
-// ============================================================================
-// ADDITION
-// ============================================================================
-
-private fun contentToTracksDp(
-    contentPx: Float, density: Float
-): Float {
-    if (density <= 0f) {
-        return 0f
-    }
-    return contentPx.coerceAtLeast(0f) / density
-}
-
-
-// ============================================================================
-// REMOVE TAP GESTURE
-// ============================================================================
-
-private suspend fun PointerInputScope.detectRemoveTap(
-    onTap: (Offset) -> Unit
-) {
-    awaitEachGesture {
-
-        val down = awaitFirstDown(
-            requireUnconsumed = false, pass = PointerEventPass.Initial
-        )
-
-        val startPosition = down.position
-        var moved = false
-
-        while (true) {
-
-            val event = awaitPointerEvent(
-                PointerEventPass.Final
-            )
-
-            val change = event.changes.firstOrNull {
-                it.id == down.id
-            }
-
-            if (change == null) {
-                break
-            }
-
-            val dx = change.position.x - startPosition.x
-
-            val dy = change.position.y - startPosition.y
-
-            val distance = sqrt(dx * dx + dy * dy)
-
-            if (distance > viewConfiguration.touchSlop) {
-                moved = true
-            }
-
-            if (change.changedToUpIgnoreConsumed()) {
-                if (!moved) {
-                    onTap(
-                        change.position
-                    )
-                }
-
-                break
-            }
-        }
-    }
-}
 
 // ============================================================================
 // LAZY TRACKS
@@ -1003,5 +923,19 @@ fun LazyTracksDemo() {
             }
         }
     }
-
 }
+
+
+// ============================================================================
+// ADDITION
+// ============================================================================
+
+private fun contentToTracksDp(
+    contentPx: Float, density: Float
+): Float {
+    if (density <= 0f) {
+        return 0f
+    }
+    return contentPx.coerceAtLeast(0f) / density
+}
+

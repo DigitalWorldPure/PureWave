@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.goldenankh.domain.model.ItemPosition
 import com.goldenankh.domain.model.TracksData
 import com.goldenankh.domain.model.TracksItem
-import com.goldenankh.purewave.ui.components.tracklist.lazy.LazyTracksState
+import com.goldenankh.purewave.ui.components.tracklist.lazy.scrollstate.LazyTracksState
 import com.goldenankh.purewave.ui.components.tracklist.lazy.model.PlacedTrackItem
 import kotlin.math.roundToInt
 

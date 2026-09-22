@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.goldenankh.domain.model.AddSelection
 import com.goldenankh.domain.model.TracksData
-import com.goldenankh.purewave.ui.components.tracklist.lazy.LazyTracksState
+import com.goldenankh.purewave.ui.components.tracklist.lazy.scrollstate.LazyTracksState
 
 fun DrawScope.drawSelectionArea(
     addSelection: AddSelection?,
