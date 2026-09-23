@@ -58,6 +58,7 @@ dependencies {
     implementation (libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
+    implementation(libs.androidx.core.splashscreen)
     ksp(libs.hilt.android.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
