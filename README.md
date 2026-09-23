@@ -25,8 +25,7 @@ Already implemented:
 In development:
 1) Parameter selection when adding a sample
 2) Parameter selection for existing samples
-3) Splash screen upon app launch
-4) Music file selection for the sample
+3) Music file selection for the sample
 
 Planned features:
 1) Audio track playback
