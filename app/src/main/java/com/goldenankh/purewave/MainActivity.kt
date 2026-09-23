@@ -28,12 +28,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
-import com.goldenankh.purewave.ui.components.tracklist.LazyTracksDemo
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.goldenankh.purewave.ui.screens.SplashScreen
+import com.goldenankh.purewave.ui.screens.TracksScreen
 import com.goldenankh.purewave.ui.theme.PureWaveTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -42,13 +41,31 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             PureWaveTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    PureWaveTheme {
-                        Column(modifier = Modifier.padding(innerPadding)) {
-                            LazyTracksDemo()
-                        }
+
+                val navController = rememberNavController()
+
+                NavHost(
+                    navController = navController,
+                    startDestination = "splash"
+                ) {
+
+                    composable("splash") {
+                        SplashScreen(
+                            onFinished = {
+                                navController.navigate("tracks") {
+                                    popUpTo("splash") {
+                                        inclusive = true
+                                    }
+                                }
+                            }
+                        )
+                    }
+
+                    composable("tracks") {
+                        TracksScreen()
                     }
                 }
             }

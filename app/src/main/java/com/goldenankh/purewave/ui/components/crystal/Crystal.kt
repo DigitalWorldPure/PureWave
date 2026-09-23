@@ -22,19 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
 
-package com.goldenankh.purewave.ui.screens
+package com.goldenankh.purewave.ui.components.crystal
 
+import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.goldenankh.purewave.ui.components.tracklist.LazyTracksDemo
+import com.goldenankh.purewave.R
 
 @Composable
-fun TracksScreen() {
-    LazyTracksDemo()
+fun Crystal(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        painter = painterResource(R.drawable.ic_crystal),
+        contentDescription = null,
+        modifier = modifier
+    )
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun TracksScreenPreview() {
-    TracksScreen()
+fun CrystalPreview() {
+    Crystal()
 }
