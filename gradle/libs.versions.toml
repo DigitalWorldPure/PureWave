@@ -16,6 +16,7 @@ ksp = "2.3.9"
 appcompat = "1.8.0"
 material = "1.14.0"
 splashscreen = "1.2.0"
+mockk = "1.14.11"
 
 [libraries]
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
@@ -40,6 +41,7 @@ hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
+mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk" }
 
 [plugins]
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
