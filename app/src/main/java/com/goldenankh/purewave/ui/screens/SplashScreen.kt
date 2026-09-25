@@ -53,7 +53,9 @@ import com.goldenankh.purewave.R
 import com.goldenankh.purewave.ui.components.animatedLogo.AnimatedLogo
 import com.goldenankh.purewave.ui.components.animatedwave.AnimatedWave
 import com.goldenankh.purewave.ui.components.crystal.Crystal
+import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun SplashScreen(
@@ -101,6 +103,8 @@ fun SplashScreen(
                 easing = FastOutSlowInEasing
             )
         )
+
+        delay(120.milliseconds)
         onFinished()
     }
 
