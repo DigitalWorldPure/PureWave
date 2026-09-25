@@ -453,6 +453,16 @@ fun LazyTracks(
 
             Box(
                 Modifier
+                    .drawBehind {
+                        drawTracksScale(
+                            contentWidth = tracksData.contentWidth.dp.toPx().toInt(),
+                            contentHeight = tracksData.contentHeight.dp.toPx().toInt(),
+                            scrollX = state.scrollX,
+                            dpPerSecond = dpPerSecond,
+                            trackWidth = trackWidth.toPx(),
+                            timeDivisionSeconds = timeDivisionSeconds,
+                        )
+                    }
                     .fillMaxWidth()
                     .weight(1f)
                     .clipToBounds()
@@ -474,16 +484,6 @@ fun LazyTracks(
 
                 Box(
                     Modifier
-                        .drawBehind {
-                            drawTracksScale(
-                                contentWidth = tracksData.contentWidth.dp.toPx().toInt(),
-                                contentHeight = tracksData.contentHeight.dp.toPx().toInt(),
-                                scrollX = state.scrollX,
-                                dpPerSecond = dpPerSecond,
-                                trackWidth = trackWidth.toPx(),
-                                timeDivisionSeconds = timeDivisionSeconds,
-                            )
-                        }
                         .fillMaxSize()
                         .padding(
                             start = trackWidth

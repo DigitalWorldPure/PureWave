@@ -58,7 +58,7 @@ fun DrawScope.drawTracksScale(
     }
 
     clipRect(
-        left = trackWidth,
+        left = trackWidth - 5.dp.toPx(),
         top = 0f,
         right = size.width,
         bottom = size.height
