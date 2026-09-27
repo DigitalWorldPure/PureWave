@@ -61,6 +61,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -451,12 +452,15 @@ fun LazyTracks(
             // TRACKS
             // =================================================================
 
+            val scaleTextMeasurer = rememberTextMeasurer()
+
             Box(
                 Modifier
                     .drawBehind {
                         drawTracksScale(
                             contentWidth = tracksData.contentWidth.dp.toPx().toInt(),
                             contentHeight = tracksData.contentHeight.dp.toPx().toInt(),
+                            textMeasurer = scaleTextMeasurer,
                             scrollX = state.scrollX,
                             dpPerSecond = dpPerSecond,
                             trackWidth = trackWidth.toPx(),
