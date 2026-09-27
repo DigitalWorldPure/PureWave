@@ -24,15 +24,17 @@ THE SOFTWARE.
 
 package com.goldenankh.purewave.ui.components.tracklist.scale
 
-import android.graphics.Paint
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.clipRect
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextMeasurer
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlin.math.max
 
 /**
@@ -49,6 +51,7 @@ import kotlin.math.max
 fun DrawScope.drawTracksScale(
     contentWidth: Int,
     contentHeight: Int,
+    textMeasurer: TextMeasurer,
     scrollX: Float,
     dpPerSecond: Dp,
     timeDivisionSeconds: Int,
@@ -73,20 +76,11 @@ fun DrawScope.drawTracksScale(
         val minorStep = (majorStep / 5)
                 .coerceAtLeast(1)
 
-        val labelBaselinePx = 18.dp.value * density
+        val labelBaselinePx = 16.dp.value * density
 
         val majorStrokeWidth = 1.5.dp.value * density
         val minorStrokeWidth = 1.dp.value * density
         val minorTopPadding = 8.dp.value * density
-
-        val textSize = 12.dp.value * density
-
-        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-                color = Color(0xFF555555).toArgb()
-                this.textSize = textSize
-                textAlign = Paint.Align.CENTER
-            }
-
         /*
          * The scale is located in content coordinates
          *
@@ -118,36 +112,36 @@ fun DrawScope.drawTracksScale(
 
                     drawLine(
                         color = Color(0xFF777777),
-                        start = Offset(
-                            x,
-                            30.dp.value * density
-                        ),
-                        end = Offset(
-                            x,
-                            contentHeight.toFloat()
-                        ),
+                        start = Offset(x, 30.dp.value * density),
+                        end = Offset(x, contentHeight.toFloat()),
                         strokeWidth = majorStrokeWidth
                     )
 
-                    drawContext
-                        .canvas
-                        .nativeCanvas
-                        .drawText(
-                            second.toString(),
-                            x,
-                            labelBaselinePx,
-                            paint
-                        )
+                    val secondsString = second.toString()
+
+                    val textLayoutResult = textMeasurer.measure(
+                        text = AnnotatedString(secondsString)
+                    )
+
+                    val textSize = textLayoutResult.size
+
+                    drawText(
+                        text = secondsString,
+                        style = TextStyle(
+                            fontSize = 12.sp,
+                            color = Color(0xFF555555)
+                        ),
+                        softWrap = false,
+                        topLeft = Offset(x - (textSize.width/2f), labelBaselinePx),
+                        textMeasurer = textMeasurer
+                    )
                 }
 
                 second % minorStep == 0 -> {
 
                     drawLine(
                         color = Color(0xFFAAAAAA),
-                        start = Offset(
-                            x,
-                            30.dp.value * density + minorTopPadding
-                        ),
+                        start = Offset(x, 30.dp.value * density + minorTopPadding),
                         end = Offset(x, contentHeight.toFloat()),
                         strokeWidth = minorStrokeWidth
                     )
