@@ -33,6 +33,7 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import kotlin.math.max
 
 /**
  * Scale in seconds
@@ -58,7 +59,7 @@ fun DrawScope.drawTracksScale(
     }
 
     clipRect(
-        left = trackWidth - 5.dp.toPx(),
+        left = trackWidth - max(5.dp.toPx() - scrollX, 0f),
         top = 0f,
         right = size.width,
         bottom = size.height
