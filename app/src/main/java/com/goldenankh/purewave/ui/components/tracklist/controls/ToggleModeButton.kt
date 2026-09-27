@@ -24,66 +24,64 @@ THE SOFTWARE.
 
 package com.goldenankh.purewave.ui.components.tracklist.controls
 
+import androidx.annotation.DrawableRes
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.goldenankh.purewave.R
 
+/**
+ * Button for switching states
+ *
+ * @param selected switched to this button
+ * @param selectedColor background button color if switched to this button
+ * @param imageResId Image if button is not selected
+ * @param selectedImageResId Image if button is selected
+ * @param onClick called when this button is clicked
+ *
+ */
 @Composable
 fun ToggleModeButton(
-    text: String,
+    modifier: Modifier = Modifier,
     selected: Boolean,
     selectedColor: Color,
-    modifier: Modifier = Modifier,
+    @DrawableRes imageResId: Int,
+    @DrawableRes selectedImageResId: Int? = null,
     onClick: () -> Unit
 ) {
-    Box(
-        modifier
-            .width(44.dp)
-            .height(36.dp)
+    IconButton(
+        onClick = onClick,
+        modifier = modifier
             .background(
                 if (selected) {
-                    selectedColor.copy(alpha = .16f)
-                } else {
-                    Color.White
-                },
-                RoundedCornerShape(8.dp)
-            )
-            .border(
-                1.dp,
-                if (selected) {
                     selectedColor
                 } else {
-                    Color(0xFFBBBBBB)
+                    Color.Transparent
                 },
-                RoundedCornerShape(8.dp)
+                RoundedCornerShape(14.dp)
             )
-            .pointerInput(selected) {
-                detectTapGestures {
-                    onClick()
-                }
-            },
-        Alignment.Center
     ) {
-        Text(
-            text = text,
-            color =
-                if (selected) {
-                    selectedColor
-                } else {
-                    Color(0xFF444444)
-                }
+        Image(
+            painter = painterResource(
+                if (selected)
+                    imageResId
+                else
+                    selectedImageResId ?: imageResId
+            ),
+            contentDescription = null,
+            modifier = Modifier
+                .width(24.dp)
+                .height(24.dp)
         )
     }
 }
@@ -92,9 +90,9 @@ fun ToggleModeButton(
 @Composable
 fun ToggleModeButtonPreview() {
     ToggleModeButton(
-        text = "+",
         selected = false,
-        selectedColor = Color.Red,
+        selectedColor = Color.Gray,
+        imageResId = R.drawable.ic_plus,
         onClick = {}
     )
 }

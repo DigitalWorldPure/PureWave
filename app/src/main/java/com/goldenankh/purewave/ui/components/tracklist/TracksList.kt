@@ -525,7 +525,7 @@ fun LazyTracks(
                                     tracksData, separatorColor, separatorWidth, state
                                 )
                             }
-                        // =================================================
+                            // =================================================
                         // REMOVE TAP
                         // =================================================
 
@@ -556,7 +556,7 @@ fun LazyTracks(
                             }
                         }
 
-                        // =================================================
+                            // =================================================
                         // ADD TAP
                         // =================================================
 
@@ -595,7 +595,7 @@ fun LazyTracks(
                             }
                         }
 
-                        // =================================================
+                            // =================================================
                         // ADD LONG-PRESS SELECTION
                         // =================================================
 
@@ -664,7 +664,7 @@ fun LazyTracks(
                                 })
                         }
 
-                        // =================================================
+                            // =================================================
                         // EXISTING BLOCK DRAG
                         // =================================================
 
@@ -842,17 +842,20 @@ fun LazyTracks(
             // PANEL
             // =================================================================
 
-            ControlPanel(mode = editMode, onModeChange = { newMode ->
-                if (newMode == TracksActionMode.ADD || newMode == TracksActionMode.REMOVE) {
-                    stopPlayback()
+            ControlPanel(
+                mode = editMode,
+                selectedButtonColor = Color(0xFFCECECE),
+                onModeChange = { newMode ->
+                    if (newMode == TracksActionMode.ADD || newMode == TracksActionMode.REMOVE) {
+                        stopPlayback()
+                    }
+                    stopAddSelectionAutoScroll()
+                    clearAddSelection()
+                    editMode = newMode
+                }, onPlay = {
+                    togglePlayback()
                 }
-
-                stopAddSelectionAutoScroll()
-                clearAddSelection()
-                editMode = newMode
-            }, onPlay = {
-                togglePlayback()
-            })
+            )
         }
     }
 

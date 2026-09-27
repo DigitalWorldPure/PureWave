@@ -32,18 +32,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.goldenankh.purewave.R
 import com.goldenankh.purewave.ui.components.tracklist.TracksActionMode
 
 /**
  * Editing and playback panel
  *
  * @param mode Active mode
+ * @param selectedButtonColor Color for the active button
  * @param onModeChange Called when the mode changes
  * @param onPlay Called when playback starts or ends
  *
@@ -51,57 +54,45 @@ import com.goldenankh.purewave.ui.components.tracklist.TracksActionMode
 @Composable
 fun ControlPanel(
     mode: TracksActionMode,
-    onModeChange:
-        (TracksActionMode) -> Unit,
+    selectedButtonColor: Color,
+    onModeChange: (TracksActionMode) -> Unit,
     onPlay: () -> Unit
 ) {
-
-
     Row(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .height(52.dp)
+                .wrapContentHeight()
                 .background(Color.White)
                 .border(
                     1.dp,
                     Color(0xFFCCCCCC)
                 )
                 .padding(
-                    horizontal = 8.dp,
-                    vertical = 6.dp
+                    horizontal = 16.dp,
+                    vertical = 8.dp
                 ),
         verticalAlignment =
             Alignment.CenterVertically
     ) {
 
-        PlayButton(
-            isPlaying = mode ==
-                    TracksActionMode.PLAY,
-            selected =
-                mode ==
-                        TracksActionMode.PLAY,
+        ToggleModeButton(
+            selected = mode == TracksActionMode.PLAY,
+            selectedColor = selectedButtonColor,
+            imageResId = R.drawable.ic_stop,
+            selectedImageResId = R.drawable.ic_play,
             onClick = onPlay
         )
 
-        Spacer(
-            Modifier.width(8.dp)
-        )
+        Spacer(Modifier.width(8.dp))
 
         ToggleModeButton(
-            text = "+",
-            selected =
-                mode ==
-                        TracksActionMode.ADD,
-            selectedColor =
-                Color(0xFF2E7D32)
+            selected = mode == TracksActionMode.ADD,
+            selectedColor = selectedButtonColor,
+            imageResId = R.drawable.ic_plus
         ) {
-
             onModeChange(
-                if (
-                    mode ==
-                    TracksActionMode.ADD
-                ) {
+                if (mode == TracksActionMode.ADD) {
                     TracksActionMode.NONE
                 } else {
                     TracksActionMode.ADD
@@ -110,23 +101,16 @@ fun ControlPanel(
         }
 
         Spacer(
-            Modifier.width(6.dp)
+            Modifier.width(8.dp)
         )
 
         ToggleModeButton(
-            text = "−",
-            selected =
-                mode ==
-                        TracksActionMode.REMOVE,
-            selectedColor =
-                Color(0xFFC62828)
+            selected = mode == TracksActionMode.REMOVE,
+            selectedColor = selectedButtonColor,
+            imageResId = R.drawable.ic_minus
         ) {
-
             onModeChange(
-                if (
-                    mode ==
-                    TracksActionMode.REMOVE
-                ) {
+                if (mode == TracksActionMode.REMOVE) {
                     TracksActionMode.NONE
                 } else {
                     TracksActionMode.REMOVE
@@ -142,5 +126,6 @@ private fun ControlPanelPreview() {
     ControlPanel(
         mode = TracksActionMode.ADD,
         onModeChange = {},
+        selectedButtonColor = Color(0xFF606060),
         onPlay = {})
 }
