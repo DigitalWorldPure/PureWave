@@ -126,6 +126,6 @@ private fun ControlPanelPreview() {
     ControlPanel(
         mode = TracksActionMode.ADD,
         onModeChange = {},
-        selectedButtonColor = Color(0xFF606060),
+        selectedButtonColor = Color(0xFFCECECE),
         onPlay = {})
 }
