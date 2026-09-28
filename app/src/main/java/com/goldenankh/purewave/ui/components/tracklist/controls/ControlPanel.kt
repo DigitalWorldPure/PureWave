@@ -26,6 +26,7 @@ package com.goldenankh.purewave.ui.components.tracklist.controls
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +34,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,64 +60,66 @@ fun ControlPanel(
     onModeChange: (TracksActionMode) -> Unit,
     onPlay: () -> Unit
 ) {
-    Row(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .background(Color.White)
-                .border(
-                    1.dp,
-                    Color(0xFFCCCCCC)
-                )
-                .padding(
-                    horizontal = 16.dp,
-                    vertical = 8.dp
-                ),
-        verticalAlignment =
-            Alignment.CenterVertically
+    Column(
+        modifier = Modifier
+            .background(Color.White)
     ) {
-
-        ToggleModeButton(
-            selected = mode == TracksActionMode.PLAY,
-            selectedColor = selectedButtonColor,
-            imageResId = R.drawable.ic_stop,
-            selectedImageResId = R.drawable.ic_play,
-            onClick = onPlay
-        )
-
-        Spacer(Modifier.width(8.dp))
-
-        ToggleModeButton(
-            selected = mode == TracksActionMode.ADD,
-            selectedColor = selectedButtonColor,
-            imageResId = R.drawable.ic_plus
+        HorizontalDivider(thickness = 1.dp, color = Color(0xFFCCCCCC))
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .padding(
+                        horizontal = 16.dp,
+                        vertical = 8.dp
+                    ),
+            verticalAlignment =
+                Alignment.CenterVertically
         ) {
-            onModeChange(
-                if (mode == TracksActionMode.ADD) {
-                    TracksActionMode.NONE
-                } else {
-                    TracksActionMode.ADD
-                }
-            )
-        }
 
-        Spacer(
-            Modifier.width(8.dp)
-        )
 
-        ToggleModeButton(
-            selected = mode == TracksActionMode.REMOVE,
-            selectedColor = selectedButtonColor,
-            imageResId = R.drawable.ic_minus
-        ) {
-            onModeChange(
-                if (mode == TracksActionMode.REMOVE) {
-                    TracksActionMode.NONE
-                } else {
-                    TracksActionMode.REMOVE
-                }
+            ToggleModeButton(
+                selected = mode == TracksActionMode.PLAY,
+                selectedColor = selectedButtonColor,
+                imageResId = R.drawable.ic_stop,
+                selectedImageResId = R.drawable.ic_play,
+                onClick = onPlay
             )
+
+            Spacer(Modifier.width(8.dp))
+
+            ToggleModeButton(
+                selected = mode == TracksActionMode.ADD,
+                selectedColor = selectedButtonColor,
+                imageResId = R.drawable.ic_plus
+            ) {
+                onModeChange(
+                    if (mode == TracksActionMode.ADD) {
+                        TracksActionMode.NONE
+                    } else {
+                        TracksActionMode.ADD
+                    }
+                )
+            }
+
+            Spacer(
+                Modifier.width(8.dp)
+            )
+
+            ToggleModeButton(
+                selected = mode == TracksActionMode.REMOVE,
+                selectedColor = selectedButtonColor,
+                imageResId = R.drawable.ic_minus
+            ) {
+                onModeChange(
+                    if (mode == TracksActionMode.REMOVE) {
+                        TracksActionMode.NONE
+                    } else {
+                        TracksActionMode.REMOVE
+                    }
+                )
+            }
         }
     }
 }
