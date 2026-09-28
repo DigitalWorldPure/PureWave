@@ -39,10 +39,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.goldenankh.purewave.ui.components.tracklist.LazyTracksDemo
 
 @Composable
-fun TracksScreen(
+fun SettingsScreen(
     onMenuClick: () -> Unit = {}
 ) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -51,9 +50,6 @@ fun TracksScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            LazyTracksDemo()
-
-            // Menu button over the scale
             IconButton(
                 onClick = onMenuClick,
                 modifier = Modifier
@@ -76,6 +72,6 @@ fun TracksScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun TracksScreenPreview() {
-    TracksScreen()
+private fun SettingsScreenPreview() {
+    SettingsScreen()
 }

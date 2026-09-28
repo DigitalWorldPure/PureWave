@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name" translatable="false">Pure Wave</string>
     <string name="default_track_name">Track %s</string>
+    <string name="menu_tracks">Tracks</string>
+    <string name="menu_samples">Samples</string>
+    <string name="menu_curves">Curves</string>
+    <string name="menu_settings">Settings</string>
 </resources>
