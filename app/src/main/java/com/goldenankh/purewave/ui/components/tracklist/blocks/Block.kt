@@ -62,15 +62,6 @@ fun Block(
                 RoundedCornerShape(
                     8.dp
                 )
-            )
-            .border(
-                1.dp,
-                Color.White.copy(
-                    .25f
-                ),
-                RoundedCornerShape(
-                    8.dp
-                )
             ),
         Alignment.CenterStart
     ) {
