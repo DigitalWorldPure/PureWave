@@ -634,8 +634,6 @@ class EditTracksUseCaseImpl @Inject constructor(
         block: TracksItem.Block,
         dropOffset: Float
     ): List<TrackRow>? {
-
-
         val sourceRow = tracks[sourceRowIndex]
 
         val targetRow = tracks[targetRowIndex]
@@ -673,15 +671,6 @@ class EditTracksUseCaseImpl @Inject constructor(
         mergeAdjacentGaps(
             targetItems
         )
-
-        if (
-            sourceItems.totalWidth() !=
-            sourceRow.totalWidth() ||
-            targetItems.totalWidth() !=
-            targetRow.totalWidth()
-        ) {
-            return null
-        }
 
         return tracks.toMutableList().apply {
             this[sourceRowIndex] =
@@ -747,10 +736,6 @@ class EditTracksUseCaseImpl @Inject constructor(
         mergeAdjacentGaps(
             items
         )
-
-        if (items.totalWidth() != originalWidth) {
-            return null
-        }
 
         return tracks.toMutableList().apply {
             this[rowIndex] = row.copy(
