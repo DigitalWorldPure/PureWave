@@ -26,43 +26,62 @@ package com.goldenankh.purewave.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = PrimaryLightColor,
+    onSurfaceVariant = Color.Black,
+    surfaceContainerHighest = PanelContainerLightColor,
+    onPrimary = Color.White,
+    tertiaryContainer = TertiaryLightColor,
+    background = Color.White,
+    onBackground = Color.Black,
+    onSurface = OnSurfaceColor
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    primary = PrimaryLightColor,
+    onSurfaceVariant = Color.Black,
+    surfaceContainerHighest = PanelContainerLightColor,
     onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    tertiaryContainer = TertiaryLightColor,
+    background = Color.White,
+    onBackground = Color.Black,
+    onSurface = OnSurfaceColor
 )
+
+val LocalExtendedColors = staticCompositionLocalOf { defaultAdditionalColors() }
 
 @Composable
 fun PureWaveTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
+    val pureWaveAdditionalColors = PureWaveAdditionalColors(
+        logoGradientTopColor = LogoGradientTopColor,
+        logoGradientBottomColor = LogoGradientBottomColor,
+        trackHeaderBorderColor = TrackHeaderBorderColor,
+        trackHeaderBackgroundColor = TrackHeaderBackgroundColor,
+        playbackIndicatorColor = PlaybackIndicatorColor,
+        playbackDotColor = PlaybackDotColor,
+        dropIndicatorColor = DropIndicatorColor,
+        dropIndicatorBorderColor = DropIndicatorBorderColor,
+        scaleBorderColor = Color.Black,
+        drawerDividerColor = DrawerDividerColor
+    )
     val colorScheme = when {
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
@@ -73,9 +92,22 @@ fun PureWaveTheme(
         else -> LightColorScheme
     }
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
+    CompositionLocalProvider(LocalExtendedColors provides pureWaveAdditionalColors) {
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = Typography,
+            content = content
+        )
+    }
+}
+
+object PureWaveTheme {
+    val additionalColors: PureWaveAdditionalColors
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalExtendedColors.current
+    val colorScheme: ColorScheme
+        @Composable
+        @ReadOnlyComposable
+        get() = MaterialTheme.colorScheme
 }

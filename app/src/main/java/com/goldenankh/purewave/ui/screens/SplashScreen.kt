@@ -43,7 +43,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -53,6 +52,7 @@ import com.goldenankh.purewave.R
 import com.goldenankh.purewave.ui.components.animatedLogo.AnimatedLogo
 import com.goldenankh.purewave.ui.components.animatedwave.AnimatedWave
 import com.goldenankh.purewave.ui.components.crystal.Crystal
+import com.goldenankh.purewave.ui.theme.PureWaveTheme
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
@@ -111,7 +111,7 @@ fun SplashScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1E42DE))
+            .background(PureWaveTheme.colorScheme.primary)
     ) {
         Crystal(
             modifier = Modifier
@@ -136,9 +136,9 @@ fun SplashScreen(
                             y = 0
                         )
                     },
-                startColor = Color.White,
-                gradientTopColor = Color(0xFF7B61FF),
-                gradientBottomColor = Color(0xFFFF4D8D),
+                startColor = PureWaveTheme.colorScheme.onPrimary,
+                gradientTopColor = PureWaveTheme.additionalColors.logoGradientTopColor,
+                gradientBottomColor = PureWaveTheme.additionalColors.logoGradientBottomColor,
                 fadeInDuration = 500,
                 gradientDuration = 500
             )
@@ -149,7 +149,7 @@ fun SplashScreen(
                     .height(200.dp),
                 durationMillis = 900,
                 shineDurationMillis = 300,
-                color = Color.White,
+                color = PureWaveTheme.colorScheme.onPrimary,
                 strokeWidth = 3f
             )
         }
@@ -159,6 +159,8 @@ fun SplashScreen(
 @Preview(showBackground = true)
 @Composable
 fun SplashScreenPreview() {
-    SplashScreen({})
+    PureWaveTheme {
+        SplashScreen({})
+    }
 }
 

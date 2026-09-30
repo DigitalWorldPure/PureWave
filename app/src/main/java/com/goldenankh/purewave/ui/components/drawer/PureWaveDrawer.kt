@@ -34,6 +34,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -50,6 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.goldenankh.purewave.R
 import com.goldenankh.purewave.ui.routing.Routes
+import com.goldenankh.purewave.ui.theme.PureWaveTheme
 
 @Composable
 fun PureWaveDrawer(
@@ -85,15 +87,14 @@ fun PureWaveDrawer(
         modifier = Modifier
             .fillMaxHeight()
             .width(320.dp),
-        drawerContainerColor = Color(0xFFE0E0E0),
-        drawerContentColor = Color.Black,
+        drawerContainerColor = PureWaveTheme.colorScheme.surfaceContainerHighest,
+        drawerContentColor = PureWaveTheme.colorScheme.onSurface,
         drawerShape = MaterialTheme.shapes.extraSmall
     ) {
 
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .background(Color(0xFFE0E0E0))
         ) {
 
             // =========================================================
@@ -113,11 +114,9 @@ fun PureWaveDrawer(
                 )
             }
 
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(8.dp)
-                    .background(Color(0xFFD6D6E0))
+            HorizontalDivider(
+                thickness = 8.dp,
+                color = PureWaveTheme.additionalColors.drawerDividerColor,
             )
 
             Spacer(Modifier.height(14.dp))
@@ -140,8 +139,7 @@ fun PureWaveDrawer(
                     label = {
                         Text(
                             text = stringResource(item.title),
-                            fontSize = 20.sp,
-                            color = Color(0xFF111111)
+                            style = MaterialTheme.typography.titleMedium,
                         )
                     },
 
@@ -150,7 +148,6 @@ fun PureWaveDrawer(
                             painter = painterResource(item.icon),
                             contentDescription = stringResource(item.title),
                             modifier = Modifier.width(28.dp),
-                            tint = Color(0xFF111111)
                         )
                     },
 
@@ -158,8 +155,7 @@ fun PureWaveDrawer(
                         item.badge?.let { count ->
                             Text(
                                 text = count,
-                                fontSize = 16.sp,
-                                color = Color(0xFF111111)
+                                style = MaterialTheme.typography.titleMedium,
                             )
                         }
                     },
@@ -171,12 +167,8 @@ fun PureWaveDrawer(
                     },
 
                     colors = NavigationDrawerItemDefaults.colors(
-                            selectedContainerColor = Color(0x40373BE8),
-                            unselectedContainerColor = Color.Transparent,
-                            selectedIconColor = Color(0xFF111111),
-                            unselectedIconColor = Color(0xFF111111),
-                            selectedTextColor = Color(0xFF111111),
-                            unselectedTextColor = Color(0xFF111111)
+                            selectedContainerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                            unselectedContainerColor = Color.Transparent
                         ),
 
                     shape = MaterialTheme.shapes.large
@@ -189,5 +181,7 @@ fun PureWaveDrawer(
 @Preview
 @Composable
 private fun PureWaveDrawerPreview() {
-    PureWaveDrawer("tracks", {})
+    PureWaveTheme {
+        PureWaveDrawer("tracks", {})
+    }
 }

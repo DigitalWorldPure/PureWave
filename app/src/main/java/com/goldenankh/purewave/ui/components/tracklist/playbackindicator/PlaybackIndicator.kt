@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.goldenankh.purewave.ui.theme.PureWaveTheme
 
 @Composable
 fun PlaybackIndicator(
@@ -114,13 +115,15 @@ fun PlaybackIndicator(
 @Preview
 @Composable
 private fun PlaybackIndicatorPreview() {
-    PlaybackIndicator(
-        720,
-        100f,
-        0f,
-        0f,
-        56.dp,
-        Color(0xFF1976D2),
-        Color(0xFFE53935),
-    )
+    PureWaveTheme {
+        PlaybackIndicator(
+            720,
+            100f,
+            0f,
+            0f,
+            56.dp,
+            PureWaveTheme.additionalColors.playbackIndicatorColor,
+            PureWaveTheme.additionalColors.playbackDotColor
+        )
+    }
 }

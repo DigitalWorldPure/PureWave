@@ -27,7 +27,6 @@ THE SOFTWARE.
 package com.goldenankh.purewave.ui.components.tracklist
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.rememberScrollable2DState
@@ -42,6 +41,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.layout.LazyLayoutPrefetchState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -62,6 +62,8 @@ import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -73,6 +75,7 @@ import com.goldenankh.domain.model.TracksData
 import com.goldenankh.domain.model.TracksItem
 import com.goldenankh.purewave.viewmodel.TracksListViewModel
 import com.goldenankh.purewave.ui.components.tracklist.blocks.Block
+import com.goldenankh.purewave.ui.components.tracklist.blocks.DraggingBlock
 import com.goldenankh.purewave.ui.components.tracklist.blocks.Gap
 import com.goldenankh.purewave.ui.components.tracklist.controls.ControlPanel
 import com.goldenankh.purewave.ui.components.tracklist.dividers.drawTrackDividers
@@ -82,9 +85,11 @@ import com.goldenankh.purewave.ui.components.tracklist.lazy.TracksLazyLayout
 import com.goldenankh.purewave.ui.components.tracklist.lazy.pointerdetection.detectRemoveTap
 import com.goldenankh.purewave.ui.components.tracklist.lazy.scrollstate.rememberLazyTracksState
 import com.goldenankh.purewave.ui.components.tracklist.playbackindicator.PlaybackIndicator
+import com.goldenankh.purewave.ui.components.tracklist.preview.TrackParametersPreviewProvider
 import com.goldenankh.purewave.ui.components.tracklist.scale.PlaybackIndicatorScaleHitArea
 import com.goldenankh.purewave.ui.components.tracklist.scale.drawTracksScale
 import com.goldenankh.purewave.ui.components.tracklist.selection.drawSelectionArea
+import com.goldenankh.purewave.ui.theme.PureWaveTheme
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -126,8 +131,8 @@ fun LazyTracks(
     timeDivisionSeconds: Int,
     timeScaleHeight: Dp,
     trackWidth: Dp,
-    trackColor: Color,
-    trackBorderColor: Color,
+    trackHeaderBackgroundColor: Color,
+    trackHeaderBorderColor: Color,
     trackTextColor: Color,
     backgroundColor: Color,
     dropIndicatorColor: Color,
@@ -453,6 +458,7 @@ fun LazyTracks(
             // =================================================================
 
             val scaleTextMeasurer = rememberTextMeasurer()
+            val scaleTextStyle = MaterialTheme.typography.bodySmall
 
             Box(
                 Modifier
@@ -465,6 +471,7 @@ fun LazyTracks(
                             dpPerSecond = dpPerSecond,
                             trackWidth = trackWidth.toPx(),
                             timeDivisionSeconds = timeDivisionSeconds,
+                            scaleTextStyle = scaleTextStyle
                         )
                     }
                     .fillMaxWidth()
@@ -476,8 +483,8 @@ fun LazyTracks(
                     trackWidth = trackWidth,
                     timeScaleHeight = timeScaleHeight,
                     rowHeight = rowHeight,
-                    trackColor = trackColor,
-                    trackBorderColor = trackBorderColor,
+                    trackHeaderBackgroundColor = trackHeaderBackgroundColor,
+                    trackHeaderBorderColor = trackHeaderBorderColor,
                     trackTextColor = trackTextColor,
                     state = state
                 )
@@ -769,26 +776,15 @@ fun LazyTracks(
                                 val trackPosition = tracksData.positions[targetRow.id]
 
                                 if (trackPosition != null) {
-                                    Box(
-                                        Modifier
-                                            .offset {
-                                                IntOffset(
-                                                    (moveBlockDropTarget.gapStartX.dp.toPx() + moveBlockDropTarget.offset.dp.toPx() - state.scrollX).roundToInt(),
-                                                    (trackPosition.top.dp.toPx() - state.scrollY).roundToInt()
-                                                )
-                                            }
-                                            .width(moveBlockDragSession.block.width.dp)
-                                            .height(rowHeight)
-                                            .background(
-                                                dropIndicatorColor, RoundedCornerShape(
-                                                    8.dp
-                                                )
-                                            )
-                                            .border(
-                                                2.dp, dropIndicatorBorderColor, RoundedCornerShape(
-                                                    8.dp
-                                                )
-                                            ))
+                                    DraggingBlock(
+                                        rowHeight = rowHeight,
+                                        dragSession = moveBlockDragSession,
+                                        moveBlockDropTarget = moveBlockDropTarget,
+                                        trackPosition = trackPosition,
+                                        dropIndicatorColor = dropIndicatorColor,
+                                        dropIndicatorBorderColor = dropIndicatorBorderColor,
+                                        state = state
+                                    )
                                 }
                             }
                         }
@@ -812,17 +808,13 @@ fun LazyTracks(
                                         }, RoundedCornerShape(
                                             8.dp
                                         )
-                                    )
-                                    .border(
-                                        1.dp, Color.White.copy(.45f), RoundedCornerShape(
-                                            8.dp
-                                        )
-                                    ), Alignment.CenterStart
+                                    ),
+                                Alignment.CenterStart
                             ) {
                                 Text(
                                     text = moveBlockDragSession.block.text,
                                     maxLines = 1,
-                                    color = Color.White,
+                                    color = PureWaveTheme.colorScheme.onPrimary,
                                     modifier = Modifier.padding(horizontal = 12.dp)
                                 )
                             }
@@ -848,7 +840,7 @@ fun LazyTracks(
 
             ControlPanel(
                 mode = editMode,
-                selectedButtonColor = Color(0xFFCECECE),
+                selectedButtonColor = PureWaveTheme.colorScheme.tertiaryContainer,
                 onModeChange = { newMode ->
                     if (newMode == TracksActionMode.ADD || newMode == TracksActionMode.REMOVE) {
                         stopPlayback()
@@ -907,16 +899,16 @@ fun LazyTracksDemo() {
         newBlockWidth = 150.dp,
         rowHeight = 72.dp,
         timeScaleHeight = 56.dp,
-        trackColor = Color(0xFFE0E0E0),
-        trackBorderColor = Color(0xFFC8C8C8),
-        trackTextColor = Color(0xFF444444),
-        separatorColor = Color(0xFF000000),
+        trackHeaderBackgroundColor = PureWaveTheme.additionalColors.trackHeaderBackgroundColor,
+        trackHeaderBorderColor = PureWaveTheme.additionalColors.trackHeaderBorderColor,
+        trackTextColor = PureWaveTheme.colorScheme.onBackground,
+        separatorColor = PureWaveTheme.additionalColors.scaleBorderColor,
         separatorWidth = 1.dp,
-        playbackIndicatorColor = Color(0xFF1976D2),
-        playbackDotColor = Color(0xFFE53935),
-        backgroundColor = Color(0xFFF5F5F5),
-        dropIndicatorColor = Color(0x556750A4),
-        dropIndicatorBorderColor = Color(0xFF6750A4),
+        playbackIndicatorColor = PureWaveTheme.additionalColors.playbackIndicatorColor,
+        playbackDotColor = PureWaveTheme.additionalColors.playbackDotColor,
+        backgroundColor = PureWaveTheme.colorScheme.background,
+        dropIndicatorColor = PureWaveTheme.additionalColors.dropIndicatorColor,
+        dropIndicatorBorderColor = PureWaveTheme.additionalColors.dropIndicatorBorderColor,
         autoScrollEdge = 72.dp,
         autoScrollSpeed = 1000.dp,
     ) { item ->
@@ -927,6 +919,69 @@ fun LazyTracksDemo() {
 
             is TracksItem.Gap -> {
                 Gap()
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun LazyTracksDemoPreview(
+    @PreviewParameter(TrackParametersPreviewProvider::class)
+    tracksData: TracksData
+) {
+    PureWaveTheme {
+        val moveBlockDragSession = remember { mutableStateOf<DragSession?>(null) }
+        val moveBlockDropTarget = remember { mutableStateOf<DropTarget?>(null) }
+        val addSelectionState = remember { mutableStateOf<AddSelection?>(null) }
+        val state = rememberLazyTracksState()
+
+        LazyTracks(
+            tracksData = tracksData,
+            moveBlockDragSession = moveBlockDragSession,
+            moveBlockDropTarget = moveBlockDropTarget,
+            addSelectionState = addSelectionState,
+            addBlockAt = { _, _, _, _, _ -> },
+            addBlocksInSelection = { _ -> },
+            removeBlockAt = { _, _, _, _ -> },
+            moveBlock = { _, _, _, _, _, _ -> },
+            onStartDrag = { _, _, _, _ -> },
+            updateDragAndDropBlock = { _, _ -> },
+            updateDragSessionPosition = { _, _ -> },
+            onEndDragBlock = {},
+            startAddItemsBySelection = { _, _, _, _ -> },
+            updateAddSelectionArea = { _, _ -> },
+            updateAddSelectionCurrent = { _ -> },
+            clearAddSelection = {},
+            state = state,
+            rowHeight = 72.dp,
+            dpPerSecond = 20.dp,
+            timeDivisionSeconds = 5,
+            timeScaleHeight = 56.dp,
+            trackWidth = 100.dp,
+            trackHeaderBackgroundColor = PureWaveTheme.additionalColors.trackHeaderBackgroundColor,
+            trackHeaderBorderColor = PureWaveTheme.additionalColors.trackHeaderBorderColor,
+            trackTextColor = PureWaveTheme.colorScheme.onSurface,
+            backgroundColor = PureWaveTheme.colorScheme.background,
+            dropIndicatorColor = PureWaveTheme.additionalColors.dropIndicatorColor,
+            dropIndicatorBorderColor = PureWaveTheme.additionalColors.dropIndicatorBorderColor,
+            separatorColor = PureWaveTheme.additionalColors.scaleBorderColor,
+            separatorWidth = 1.dp,
+            playbackIndicatorColor = PureWaveTheme.additionalColors.playbackIndicatorColor,
+            playbackDotColor = PureWaveTheme.additionalColors.playbackDotColor,
+            playbackSpeed = 300.dp,
+            autoScrollEdge = 72.dp,
+            autoScrollSpeed = 1000.dp,
+            newBlockWidth = 150.dp
+        ) { item ->
+            when (item) {
+                is TracksItem.Block -> {
+                    Block(item)
+                }
+
+                is TracksItem.Gap -> {
+                    Gap()
+                }
             }
         }
     }

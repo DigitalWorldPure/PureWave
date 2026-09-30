@@ -25,14 +25,19 @@ THE SOFTWARE.
 package com.goldenankh.purewave.ui.components.tracklist.headers
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +53,7 @@ import com.goldenankh.domain.model.TracksData
 import com.goldenankh.purewave.R
 import com.goldenankh.purewave.ui.components.tracklist.lazy.scrollstate.LazyTracksState
 import com.goldenankh.purewave.ui.components.tracklist.preview.TrackParametersPreviewProvider
+import com.goldenankh.purewave.ui.theme.PureWaveTheme
 import kotlin.math.roundToInt
 
 @Composable
@@ -56,8 +62,8 @@ fun TrackHeaders(
     trackWidth: Dp,
     timeScaleHeight: Dp,
     rowHeight: Dp,
-    trackColor: Color,
-    trackBorderColor: Color,
+    trackHeaderBackgroundColor: Color,
+    trackHeaderBorderColor: Color,
     trackTextColor: Color,
     state: LazyTracksState
 ) {
@@ -74,31 +80,56 @@ fun TrackHeaders(
             val trackPosition = tracksData.positions[track.id]
 
             trackPosition?.let {
-                Box(
-                    Modifier
-                        .offset {
-                            IntOffset(
-                                0,
-                                it.top.dp.toPx().toInt() - state.scrollY.roundToInt()
+
+                if (index == 0) {
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = trackHeaderBorderColor
+                    )
+                }
+                Box(modifier = Modifier
+                    .offset {
+                        IntOffset(
+                            0,
+                            (it.top.dp + 1.5.dp).toPx().toInt() - state.scrollY.roundToInt()
+                        )
+                    }
+                ) {
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                    ) {
+                        Column(
+                            Modifier
+                                .weight(1f)
+                                .height(rowHeight)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f)
+                                    .background(trackHeaderBackgroundColor),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = stringResource(
+                                        R.string.default_track_name,
+                                        (index + 1).toString()
+                                    ),
+                                    color = trackTextColor,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    maxLines = 1
+                                )
+                            }
+                            HorizontalDivider(
+                                thickness = 1.dp,
+                                color = trackHeaderBorderColor
                             )
                         }
-                        .width(trackWidth)
-                        .height(rowHeight)
-                        .background(
-                            trackColor
+                        VerticalDivider(
+                            thickness = 1.dp,
+                            color = trackHeaderBorderColor
                         )
-                        .border(
-                            1.dp,
-                            trackBorderColor
-                        ),
-                    Alignment.Center
-                ) {
-
-                    Text(
-                        text = stringResource(R.string.default_track_name, (index + 1).toString()),
-                        color = trackTextColor,
-                        maxLines = 1
-                    )
+                    }
                 }
             }
         }
@@ -111,15 +142,17 @@ fun TrackHeadersPreview(
     @PreviewParameter(TrackParametersPreviewProvider::class)
     tracksData: TracksData
 ) {
-    TrackHeaders(
-        tracksData = tracksData,
-        trackWidth = 100.dp,
-        timeScaleHeight = 56.dp,
-        rowHeight = 72.dp,
-        trackColor = Color(0xFFE0E0E0),
-        trackBorderColor = Color(0xFFC8C8C8),
-        trackTextColor = Color(0xFF444444),
-        state = LazyTracksState()
-    )
+    PureWaveTheme {
+        TrackHeaders(
+            tracksData = tracksData,
+            trackWidth = 100.dp,
+            timeScaleHeight = 56.dp,
+            rowHeight = 72.dp,
+            trackHeaderBackgroundColor = PureWaveTheme.additionalColors.trackHeaderBackgroundColor,
+            trackHeaderBorderColor = PureWaveTheme.additionalColors.trackHeaderBorderColor,
+            trackTextColor = PureWaveTheme.colorScheme.onSurface,
+            state = LazyTracksState()
+        )
+    }
 }
 

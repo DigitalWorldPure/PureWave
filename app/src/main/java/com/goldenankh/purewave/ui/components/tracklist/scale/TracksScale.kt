@@ -34,7 +34,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlin.math.max
 
 /**
@@ -55,7 +54,8 @@ fun DrawScope.drawTracksScale(
     scrollX: Float,
     dpPerSecond: Dp,
     timeDivisionSeconds: Int,
-    trackWidth: Float
+    trackWidth: Float,
+    scaleTextStyle: TextStyle
 ) {
     if (contentWidth <= 0) {
         return
@@ -127,10 +127,7 @@ fun DrawScope.drawTracksScale(
 
                     drawText(
                         text = secondsString,
-                        style = TextStyle(
-                            fontSize = 12.sp,
-                            color = Color(0xFF555555)
-                        ),
+                        style = scaleTextStyle,
                         softWrap = false,
                         topLeft = Offset(x - (textSize.width/2f), labelBaselinePx),
                         textMeasurer = textMeasurer

@@ -26,13 +26,21 @@ package com.goldenankh.purewave.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+val PrimaryLightColor = Color(0xFF1E42DE)
+val TertiaryLightColor = Color(0x40373BE8)
+val PanelContainerLightColor = Color(0xFFE0E0E0)
+val OnSurfaceColor = Color(0xFF5D5D5D)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val DrawerDividerColor = Color(0xFFD6D6E0)
 
-val SampleTitleGradientTopColor = Color(0xFFCEC830)
-val SampleTitleGradientBottomColor = Color(0xFFB2AD2A)
+val TrackHeaderBorderColor = Color(0xFFA4A4A4)
+val TrackHeaderBackgroundColor = Color(0xFFC0C0C0)
+
+val PlaybackIndicatorColor = Color(0xFF1976D2)
+val PlaybackDotColor = Color(0xFFE53935)
+
+val DropIndicatorColor = Color(0x556750A4)
+val DropIndicatorBorderColor = Color(0xFF6750A4)
+
+val LogoGradientTopColor = Color(0xFF7B61FF)
+val LogoGradientBottomColor = Color(0xFFFF4D8D)
