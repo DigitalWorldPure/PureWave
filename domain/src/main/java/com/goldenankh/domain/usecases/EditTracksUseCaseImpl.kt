@@ -1001,16 +1001,21 @@ class EditTracksUseCaseImpl @Inject constructor(
             val itemPositions = hashMapOf<String, ItemPosition>()
             var currentX = 0f
             track.items.forEach { item ->
-                val width = item.width
-                val start = currentX
-                val end = start + width
+                val startX = currentX
+                val endX = currentX + item.width
 
-                itemPositions[item.id] = ItemPosition(
-                    startX = start,
-                    endX = end
+                println(
+                    "TRACK ITEM id=${item.id} " +
+                            "width=${item.width} " +
+                            "startX=$startX endX=$endX"
                 )
 
-                currentX = end
+                itemPositions[item.id] = ItemPosition(
+                    startX = startX,
+                    endX = endX
+                )
+
+                currentX = endX
             }
             trackPositions[track.id] = TrackPosition(
                 top = currentTop,

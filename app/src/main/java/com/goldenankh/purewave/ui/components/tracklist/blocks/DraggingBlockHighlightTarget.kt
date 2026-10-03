@@ -34,6 +34,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.Dp
@@ -60,12 +61,28 @@ fun DraggingBlock(
     dropIndicatorBorderColor: Color,
     state: LazyTracksState
 ) {
+    val density = LocalDensity.current
+
+    val startPx = with(density) {
+        (moveBlockDropTarget.gapStartX +
+                moveBlockDropTarget.offset).dp
+            .toPx()
+            .roundToInt()
+    }
+
+    val topPx = with(density) {
+        trackPosition.top.dp.toPx().roundToInt()
+    }
+
+    val x = startPx - state.scrollX.roundToInt()
+    val y = topPx - state.scrollY.roundToInt()
+
     Box(
         Modifier
             .offset {
                 IntOffset(
-                    (moveBlockDropTarget.gapStartX.dp.toPx() + moveBlockDropTarget.offset.dp.toPx() - state.scrollX).roundToInt(),
-                    (trackPosition.top.dp.toPx() - state.scrollY).roundToInt()
+                    x = x,
+                    y = y
                 )
             }
             .width(dragSession.block.width.dp)
@@ -95,8 +112,23 @@ fun DraggingBlockPreview(
 
     DraggingBlock(
         rowHeight = 72.dp,
-        dragSession = DragSession(block ?: TracksItem.Block("", "", 0f, RGBColor(0, 0, 0)), 0, 0, 0f, 0f, 0f, 0f),
-        moveBlockDropTarget = DropTarget(0, 1, 10f, gapPosition?.startX ?: 0f, (gapPosition?.endX ?: 0f) - (gapPosition?.startX ?: 0f), false),
+        dragSession = DragSession(
+            block ?: TracksItem.Block("", "", 0f, RGBColor(0, 0, 0)),
+            0,
+            0,
+            0f,
+            0f,
+            0f,
+            0f
+        ),
+        moveBlockDropTarget = DropTarget(
+            0,
+            1,
+            10f,
+            gapPosition?.startX ?: 0f,
+            (gapPosition?.endX ?: 0f) - (gapPosition?.startX ?: 0f),
+            false
+        ),
         trackPosition = rowPosition ?: TrackPosition(0, 0, mapOf()),
         dropIndicatorColor = Color(0x556750A4),
         dropIndicatorBorderColor = Color(0xFF6750A4),

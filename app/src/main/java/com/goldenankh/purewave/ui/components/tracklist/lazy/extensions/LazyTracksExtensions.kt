@@ -110,12 +110,17 @@ fun LazyLayoutMeasureScope.measureTracks(
                 continue
             }
 
+            val startPx = itemPosition.startX.dp.toPx().roundToInt()
+            val endPx = itemPosition.endX.dp.toPx().roundToInt()
+
+            val widthPx = endPx - startPx
+
             val placeable =
                 compose(flatIndex)
                     .firstOrNull()
                     ?.measure(
                         Constraints.fixed(
-                            trackItem.width.dp.toPx().toInt(),
+                            widthPx,
                             rowHeightPx
                         )
                     )
@@ -123,8 +128,8 @@ fun LazyLayoutMeasureScope.measureTracks(
 
             placed += PlacedTrackItem(
                 placeable,
-                itemPosition.startX.dp.toPx().toInt() - state.scrollX.roundToInt(),
-                trackPosition.top.dp.toPx().toInt() - state.scrollY.roundToInt()
+                startPx - state.scrollX.roundToInt(),
+                trackPosition.top.dp.toPx().roundToInt() - state.scrollY.roundToInt()
             )
         }
     }
