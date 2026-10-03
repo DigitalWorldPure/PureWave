@@ -32,12 +32,17 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -46,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.goldenankh.purewave.R
@@ -59,11 +65,18 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun SplashScreen(
-    onFinished: () -> Unit
+    onFinished: () -> Unit,
+    windowSizeClass: WindowSizeClass
 ) {
     val offsetX = remember { Animatable(-1000f) }
     val animatedScale = remember { Animatable(1f) }
     val context = LocalContext.current
+
+    val logoWeightPadding = when (windowSizeClass.widthSizeClass) {
+        WindowWidthSizeClass.Expanded -> 0.2f
+        WindowWidthSizeClass.Medium -> 0.1f
+        else -> 0.05f
+    }
 
     LaunchedEffect(Unit) {
         // Play sound
@@ -126,22 +139,41 @@ fun SplashScreen(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.Center
         ) {
-            AnimatedLogo(
+            Row(
                 modifier = Modifier
-                    .width(280.dp)
-                    .height(160.dp)
-                    .offset {
-                        IntOffset(
-                            x = offsetX.value.roundToInt(),
-                            y = 0
-                        )
-                    },
-                startColor = PureWaveTheme.colorScheme.onPrimary,
-                gradientTopColor = PureWaveTheme.additionalColors.logoGradientTopColor,
-                gradientBottomColor = PureWaveTheme.additionalColors.logoGradientBottomColor,
-                fadeInDuration = 500,
-                gradientDuration = 500
-            )
+                    .fillMaxWidth()
+                    .height(160.dp),
+                horizontalArrangement = Arrangement.Center
+
+            ) {
+                Spacer(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(logoWeightPadding)
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f - logoWeightPadding)
+                ) {
+                    AnimatedLogo(
+                        modifier = Modifier
+                            .width(280.dp)
+                            .height(160.dp)
+                            .offset {
+                                IntOffset(
+                                    x = offsetX.value.roundToInt(),
+                                    y = 0
+                                )
+                            },
+                        startColor = PureWaveTheme.colorScheme.onPrimary,
+                        gradientTopColor = PureWaveTheme.additionalColors.logoGradientTopColor,
+                        gradientBottomColor = PureWaveTheme.additionalColors.logoGradientBottomColor,
+                        fadeInDuration = 500,
+                        gradientDuration = 500
+                    )
+                }
+            }
             AnimatedWave(
                 modifier = Modifier
                     .padding(top = 50.dp)
@@ -156,11 +188,15 @@ fun SplashScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview(showBackground = true)
 @Composable
 fun SplashScreenPreview() {
     PureWaveTheme {
-        SplashScreen({})
+        SplashScreen(
+            {},
+            WindowSizeClass.calculateFromSize(DpSize(320.dp, 500.dp))
+        )
     }
 }
 

@@ -47,6 +47,7 @@ extensions.configure<ApplicationExtension>  {
 dependencies {
     implementation(project(":domain"))
     implementation(libs.androidx.compose.foundation.layout)
+    implementation(libs.androidx.compose.material3.window.size)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

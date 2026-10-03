@@ -29,6 +29,9 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -43,6 +46,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun AnimatedLogo(
@@ -170,6 +174,9 @@ private fun DrawScope.drawLogo(
 @Composable
 fun AnimatedLogoPreview() {
     AnimatedLogo(
+        modifier = Modifier
+            .width(280.dp)
+            .height(160.dp),
         gradientTopColor = Color(0xFF7B61FF),
         gradientBottomColor = Color(0xFFFF4D8D)
     )

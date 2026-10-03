@@ -32,7 +32,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -59,6 +60,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -78,6 +80,8 @@ class MainActivity : ComponentActivity() {
                 val currentRoute = navBackStackEntry?.destination?.route
 
                 val isDrawerAvailable = currentRoute != SPLASH
+
+                val windowSizeClass = calculateWindowSizeClass(this)
 
                 ModalNavigationDrawer(
                     drawerState = drawerState,
@@ -130,7 +134,8 @@ class MainActivity : ComponentActivity() {
                                         }
                                         launchSingleTop = true
                                     }
-                                }
+                                },
+                                windowSizeClass
                             )
                         }
 
