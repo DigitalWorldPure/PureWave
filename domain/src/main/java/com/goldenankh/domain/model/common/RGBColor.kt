@@ -24,4 +24,7 @@ THE SOFTWARE.
 
 package com.goldenankh.domain.model.common
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class RGBColor(val r: Int, val g: Int, val b: Int)

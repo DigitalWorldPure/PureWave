@@ -34,7 +34,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object SingletonModule {
+class AppModule {
     @Provides
     @Singleton
     fun provideTrackIdGenerator(): TrackItemIdGenerator = TrackItemIdGeneratorImpl()

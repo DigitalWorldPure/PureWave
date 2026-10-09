@@ -33,8 +33,8 @@ import com.goldenankh.domain.model.TrackRow
 import com.goldenankh.domain.model.TracksData
 import com.goldenankh.domain.model.TracksItem
 import com.goldenankh.domain.model.common.RGBColor
-import com.goldenankh.domain.usecases.EditTracksUseCase
-import com.goldenankh.domain.usecases.EditTracksUseCaseImpl
+import com.goldenankh.domain.usecases.tracks.EditTracksUseCase
+import com.goldenankh.domain.usecases.tracks.EditTracksUseCaseImpl
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

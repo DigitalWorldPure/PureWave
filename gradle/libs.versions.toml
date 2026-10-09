@@ -18,6 +18,9 @@ splashscreen = "1.2.0"
 mockk = "1.14.11"
 materialIcons = "1.7.8"
 material3WindowSizeClass = "1.4.0"
+roomVersion = "2.8.5"
+kotlinSerialization = "2.4.21"
+kotlinxSerializationJson = "1.11.0"
 
 [libraries]
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutCompose" }
@@ -44,6 +47,10 @@ androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscree
 androidx-compose-material-icons = { group = "androidx.compose.material", name = "material-icons-extended-android", version.ref = "materialIcons" }
 mockk = { module = "io.mockk:mockk-jvm", version.ref = "mockk" }
 androidx-compose-material3-window-size = { group = "androidx.compose.material3", name = "material3-window-size-class", version.ref = "material3WindowSizeClass" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomVersion" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomVersion" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 [plugins]
 google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
@@ -51,4 +58,6 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hiltAndroid" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinSerialization"}
+
 

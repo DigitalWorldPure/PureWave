@@ -1,8 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="curves">Кривые</string>
+    <string name="samples">Сэмплы</string>
+    <string name="curve">Кривая</string>
+    <string name="sample">Сэмпл</string>
+    <string name="save">Сохранить</string>
+    <string name="cancel">Отмена</string>
+    <string name="name">Название</string>
+    <string name="edit">Редактировать</string>
+    <string name="search">Поиск</string>
+    <string name="menu">Меню</string>
+    <string name="add">Добавить</string>
+    <string name="delete">Удалить</string>
+    <string name="select_color">Выбор цвета</string>
+    <string name="ok">ОК</string>
     <string name="default_track_name">Трек %s</string>
     <string name="menu_tracks">Треки</string>
-    <string name="menu_samples">Сэмплы</string>
-    <string name="menu_curves">Кривые</string>
+    <string name="menu_samples">@string/samples</string>
+    <string name="menu_curves">@string/curves</string>
     <string name="menu_settings">Настройки</string>
+    <string name="curves_header">@string/curves</string>
+    <string name="samples_header">@string/samples</string>
+    <string name="curve_header">@string/curve</string>
+    <string name="sample_header">@string/sample</string>
+    <string name="icon_parameter">Иконка:</string>
+    <string name="color_parameter">Цвет:</string>
+    <string name="program_parameter">Программа:</string>
+    <string name="duration_parameter">Длительность:</string>
+    <string name="curve_parameter">Кривая:</string>
+    <string name="save_action">@string/save</string>
+    <string name="edit_action">@string/edit</string>
+    <string name="cancel_action">@string/cancel</string>
+    <string name="add_action">@string/add</string>
+    <string name="delete_action">@string/delete</string>
+    <string name="duration_in_seconds">%1$.2f с</string>
+    <string name="error_name_not_specified">Не указано имя</string>
 </resources>

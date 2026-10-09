@@ -73,7 +73,7 @@ import com.goldenankh.domain.model.DragSession
 import com.goldenankh.domain.model.DropTarget
 import com.goldenankh.domain.model.TracksData
 import com.goldenankh.domain.model.TracksItem
-import com.goldenankh.purewave.viewmodel.TracksListViewModel
+import com.goldenankh.purewave.viewmodel.tracks.TracksListViewModel
 import com.goldenankh.purewave.ui.components.tracklist.blocks.Block
 import com.goldenankh.purewave.ui.components.tracklist.blocks.DraggingBlock
 import com.goldenankh.purewave.ui.components.tracklist.blocks.Gap

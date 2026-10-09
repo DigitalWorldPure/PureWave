@@ -22,14 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
 
-package com.goldenankh.purewave.viewmodel
+package com.goldenankh.purewave.viewmodel.tracks
 
 import androidx.lifecycle.ViewModel
 import com.goldenankh.domain.model.AddSelection
 import com.goldenankh.domain.model.DragSession
 import com.goldenankh.domain.model.DropTarget
 import com.goldenankh.domain.model.TrackRow
-import com.goldenankh.domain.usecases.EditTracksUseCase
+import com.goldenankh.domain.usecases.tracks.EditTracksUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
@@ -45,7 +45,7 @@ import javax.inject.Inject
 class TracksListViewModel @Inject constructor(
     private val editTracksUseCase: EditTracksUseCase
 ) : ViewModel() {
-    val tracksDataState = MutableStateFlow(initialTracksData.let (::updateTrackData))
+    val tracksDataState = MutableStateFlow(initialTracksData.let(::updateTrackData))
     val moveBlockDragSessionState = MutableStateFlow<DragSession?>(null)
     val moveBlockDropTargetState = MutableStateFlow<DropTarget?>(null)
     val addSelectionState = MutableStateFlow<AddSelection?>(null)

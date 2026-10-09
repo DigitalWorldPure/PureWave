@@ -22,12 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
 
-package com.goldenankh.data
+package com.goldenankh.domain.usecases.curves
 
-import com.goldenankh.domain.repository.PureWaveProjectRepository
+import com.goldenankh.domain.model.curve.Curve
+import com.goldenankh.domain.repository.CurveRepository
+import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class PureWaveProjectRepositoryImpl: PureWaveProjectRepository {
-    override suspend fun saveProjectToFile(path: String) {
-        TODO("Not yet implemented")
-    }
+class GetCurveUseCaseImpl @Inject constructor(
+    private val repository: CurveRepository
+): GetCurveUseCase {
+    override operator fun invoke(id: Long): Flow<Curve?> = repository.observeCurve(id)
 }

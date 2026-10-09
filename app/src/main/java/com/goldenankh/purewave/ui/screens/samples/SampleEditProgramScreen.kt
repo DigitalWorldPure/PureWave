@@ -22,55 +22,49 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
 
-package com.goldenankh.purewave.ui.screens
+package com.goldenankh.purewave.ui.screens.samples
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 
 @Composable
-fun CurvesScreen(
-    onMenuClick: () -> Unit = {}
+fun SampleEditProgramScreen(
+    sampleId: Long?,
+    onBack: () -> Unit
 ) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        ) {
-            IconButton(
-                onClick = onMenuClick,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(
-                        start = 16.dp,
-                        top = 8.dp
-                    )
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = "Open menu",
-                    tint = Color(0xFF424242),
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Редактор программы",
+            style = MaterialTheme.typography.headlineMedium
+        )
+        Text(
+            text = if (sampleId == null) {
+                "Новый сэмпл"
+            } else {
+                "Сэмпл #$sampleId"
+            },
+            style = MaterialTheme.typography.bodyLarge
+        )
+        TextButton(onClick = onBack) {
+            Text("Назад")
         }
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-private fun CurvesScreenPreview() {
-    CurvesScreen()
+fun SampleEditProgramScreenPreview() {
+    SampleEditProgramScreen(null, {})
 }

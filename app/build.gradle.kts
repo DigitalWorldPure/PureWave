@@ -45,6 +45,7 @@ extensions.configure<ApplicationExtension>  {
 }
 
 dependencies {
+    implementation(project(":data"))
     implementation(project(":domain"))
     implementation(libs.androidx.compose.foundation.layout)
     implementation(libs.androidx.compose.material3.window.size)
@@ -60,8 +61,8 @@ dependencies {
     implementation (libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.hilt.android)
-    implementation(libs.androidx.core.splashscreen)
     ksp(libs.hilt.android.compiler)
+    implementation(libs.androidx.core.splashscreen)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

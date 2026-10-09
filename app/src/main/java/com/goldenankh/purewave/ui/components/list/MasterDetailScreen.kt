@@ -22,55 +22,50 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
 
-package com.goldenankh.purewave.ui.screens
+package com.goldenankh.purewave.ui.components.list
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 
 @Composable
-fun SamplesScreen(
-    onMenuClick: () -> Unit = {}
+fun MasterDetailScreen(
+    listContent: @Composable () -> Unit,
+    detailContent: @Composable () -> Unit
 ) {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+    Row(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+                .weight(0.44f)
+                .fillMaxHeight()
         ) {
-            IconButton(
-                onClick = onMenuClick,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(
-                        start = 16.dp,
-                        top = 8.dp
-                    )
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Menu,
-                    contentDescription = "Open menu",
-                    tint = Color(0xFF424242),
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+            listContent()
+        }
+
+        VerticalDivider()
+
+        Box(
+            modifier = Modifier
+                .weight(0.56f)
+                .fillMaxHeight()
+        ) {
+            detailContent()
         }
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-private fun SamplesScreenPreview() {
-    SamplesScreen()
+fun MasterDetailScreenPreview() {
+    MasterDetailScreen(
+        { Box(modifier = Modifier.background(Color.Blue)) { } },
+        { Box(modifier = Modifier.background(Color.Green)) { } }
+    )
 }

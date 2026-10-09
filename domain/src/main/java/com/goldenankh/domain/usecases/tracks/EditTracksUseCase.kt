@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
 
-package com.goldenankh.domain.usecases
+package com.goldenankh.domain.usecases.tracks
 
 import com.goldenankh.domain.model.AddSelection
 import com.goldenankh.domain.model.DragSession

@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
  */
 
-package com.goldenankh.purewave.viewmodel
+package com.goldenankh.purewave.viewmodel.tracks
 
 import com.goldenankh.domain.model.TrackRow
 import com.goldenankh.domain.model.TracksItem
