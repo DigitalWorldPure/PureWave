@@ -37,6 +37,8 @@ class CurveRepositoryImpl @Inject constructor(
     private val dao: CurveDao
 ) : CurveRepository {
 
+    override fun getCount(): Flow<Int> = dao.getCount()
+
     override fun observeCurves(): Flow<List<Curve>> {
         return dao.observeAll().map { entities ->
             entities.map {

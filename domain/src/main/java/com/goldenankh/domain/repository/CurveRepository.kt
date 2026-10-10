@@ -28,6 +28,8 @@ import com.goldenankh.domain.model.curve.Curve
 import kotlinx.coroutines.flow.Flow
 
 interface CurveRepository {
+    fun getCount(): Flow<Int>
+
     fun observeCurves(): Flow<List<Curve>>
     fun observeCurve(id: Long): Flow<Curve?>
 

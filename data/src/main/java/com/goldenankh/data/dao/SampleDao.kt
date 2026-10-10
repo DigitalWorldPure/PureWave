@@ -35,6 +35,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface SampleDao {
 
+    @Query("SELECT COUNT(*) FROM samples")
+    fun getCount(): Flow<Int>
+
     @Query("SELECT * FROM samples ORDER BY id DESC")
     fun observeAll(): Flow<List<SampleEntity>>
 

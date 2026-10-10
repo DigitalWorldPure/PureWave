@@ -29,6 +29,8 @@ import com.goldenankh.domain.usecases.curves.DeleteCurveUseCase
 import com.goldenankh.domain.usecases.curves.DeleteCurveUseCaseImpl
 import com.goldenankh.domain.usecases.curves.GetCurveUseCase
 import com.goldenankh.domain.usecases.curves.GetCurveUseCaseImpl
+import com.goldenankh.domain.usecases.curves.GetCurvesCountUseCase
+import com.goldenankh.domain.usecases.curves.GetCurvesCountUseCaseImpl
 import com.goldenankh.domain.usecases.curves.ObserveCurvesUseCase
 import com.goldenankh.domain.usecases.curves.ObserveCurvesUseCaseImpl
 import com.goldenankh.domain.usecases.curves.SaveCurveUseCase
@@ -42,6 +44,12 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @Module
 @InstallIn(ViewModelComponent::class)
 object CurvesModule {
+    @ViewModelScoped
+    @Provides
+    fun provideGetCurvesCountUseCase(
+        curvesRepository: CurveRepositoryImpl
+    ): GetCurvesCountUseCase = GetCurvesCountUseCaseImpl(curvesRepository)
+
     @ViewModelScoped
     @Provides
     fun provideDeleteCurveUseCase(

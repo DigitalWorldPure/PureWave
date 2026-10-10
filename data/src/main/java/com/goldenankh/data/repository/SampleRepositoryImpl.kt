@@ -39,6 +39,8 @@ class SampleRepositoryImpl @Inject constructor(
     private val dao: SampleDao
 ) : SampleRepository {
 
+    override fun getCount(): Flow<Int> = dao.getCount()
+
     override fun observeAll(): Flow<List<Sample>> =
         dao.observeAll().map { list -> list.map { it.toDomain() } }
 

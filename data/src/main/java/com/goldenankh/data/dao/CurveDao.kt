@@ -35,6 +35,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CurveDao {
 
+    @Query("SELECT COUNT(*) FROM curves")
+    fun getCount(): Flow<Int>
+
     @Query("SELECT * FROM curves ORDER BY id DESC")
     fun observeAll(): Flow<List<CurveEntity>>
 

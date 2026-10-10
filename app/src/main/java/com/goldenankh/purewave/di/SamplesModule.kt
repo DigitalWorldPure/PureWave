@@ -27,6 +27,8 @@ package com.goldenankh.purewave.di
 import com.goldenankh.data.repository.SampleRepositoryImpl
 import com.goldenankh.domain.usecases.samples.DeleteSampleUseCase
 import com.goldenankh.domain.usecases.samples.DeleteSampleUseCaseImpl
+import com.goldenankh.domain.usecases.samples.GetSamplesCountUseCase
+import com.goldenankh.domain.usecases.samples.GetSamplesCountUseCaseImpl
 import com.goldenankh.domain.usecases.samples.ObserveSampleUseCase
 import com.goldenankh.domain.usecases.samples.ObserveSampleUseCaseImpl
 import com.goldenankh.domain.usecases.samples.ObserveSamplesUseCase
@@ -42,6 +44,12 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @Module
 @InstallIn(ViewModelComponent::class)
 object SamplesModule {
+    @ViewModelScoped
+    @Provides
+    fun provideGetCurvesCountUseCase(
+        samplesRepository: SampleRepositoryImpl
+    ): GetSamplesCountUseCase = GetSamplesCountUseCaseImpl(samplesRepository)
+
     @ViewModelScoped
     @Provides
     fun provideDeleteSampleUseCase(

@@ -25,7 +25,6 @@ THE SOFTWARE.
 package com.goldenankh.purewave.ui.components.drawer
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -42,22 +41,27 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.goldenankh.purewave.R
 import com.goldenankh.purewave.ui.routing.Routes
 import com.goldenankh.purewave.ui.theme.PureWaveTheme
+import com.goldenankh.purewave.viewmodel.common.InfoViewModel
 
 @Composable
 fun PureWaveDrawer(
     selectedRoute: String?,
-    onNavigate: (String) -> Unit
+    onNavigate: (String) -> Unit,
+    viewModel: InfoViewModel = hiltViewModel()
 ) {
+    val info = viewModel.uiState.collectAsState()
+
     val menuItems = listOf(
         DrawerMenuItem(
             route = Routes.TRACKS,
@@ -68,13 +72,13 @@ fun PureWaveDrawer(
             route = Routes.SAMPLES,
             title = R.string.menu_samples,
             icon = R.drawable.ic_icon_sample,
-            badge = "5"
+            badge = info.value.samplesCount.toString()
         ),
         DrawerMenuItem(
             route = Routes.CURVES,
             title = R.string.menu_curves,
             icon = R.drawable.ic_icon_curves,
-            badge = "2"
+            badge = info.value.curvesCount.toString()
         ),
         DrawerMenuItem(
             route = Routes.SETTINGS,

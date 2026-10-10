@@ -28,8 +28,11 @@ import com.goldenankh.domain.model.sample.Sample
 import kotlinx.coroutines.flow.Flow
 
 interface SampleRepository {
+    fun getCount(): Flow<Int>
+
     fun observeAll(): Flow<List<Sample>>
     fun observeById(id: Long): Flow<Sample?>
+
     suspend fun save(sample: Sample)
     suspend fun delete(id: Long)
 }
