@@ -267,9 +267,7 @@ class MainActivity : ComponentActivity() {
                             if (isTablet) {
                                 SamplesTabletScreen(
                                     onMenuClick = openMenuAction,
-                                    onDialogClick = { color ->
-                                        navController.navigate(color)
-                                    }
+                                    windowSizeClass = windowSizeClass
                                 )
                             } else {
                                 SamplesScreen(
@@ -309,9 +307,7 @@ class MainActivity : ComponentActivity() {
                                     initiallyEditing = true,
                                     onInitialDetailBack = { navController.popBackStack() },
                                     onMenuClick = openMenuAction,
-                                    onDialogClick = { color ->
-                                        navController.navigate(color)
-                                    }
+                                    windowSizeClass = windowSizeClass
                                 )
                             } else {
                                 SampleScreen(
@@ -322,9 +318,7 @@ class MainActivity : ComponentActivity() {
                                             "${SAMPLE_EDIT_PROGRAM}?id=${sampleId ?: -1L}"
                                         )
                                     },
-                                    onDialogClick = { color ->
-                                        navController.navigate(color)
-                                    }
+                                    windowSizeClass = windowSizeClass
                                 )
                             }
                         }
@@ -343,9 +337,7 @@ class MainActivity : ComponentActivity() {
                                 SamplesTabletScreen(
                                     initialSelectedId = id.takeIf { it >= 0L },
                                     onMenuClick = openMenuAction,
-                                    onDialogClick = { color ->
-                                        navController.navigate(color)
-                                    }
+                                    windowSizeClass = windowSizeClass
                                 )
                             } else {
                                 SampleEditProgramScreen(
@@ -358,30 +350,6 @@ class MainActivity : ComponentActivity() {
                         composable(SETTINGS) {
                             SettingsScreen(
                                 onMenuClick = openMenuAction
-                            )
-                        }
-
-                        dialog<RGBColor> { backStackEntry ->
-                            val initialColor = backStackEntry.toRoute<RGBColor>()
-                            val parentEntry = remember(backStackEntry) {
-                                val isSampleScreen = navController.visibleEntries.value.any { entry ->
-                                    val route = entry.destination.route
-                                    route != SAMPLES && route?.startsWith(SAMPLE) == true }
-                                navController.getBackStackEntry(
-                                    if (isSampleScreen)
-                                        SAMPLE
-                                    else
-                                        SAMPLES
-                                )
-                            }
-                            val sampleViewModel = hiltViewModel<SampleViewModel>(parentEntry)
-                            ColorPickerDialog(
-                                initialColor = with(initialColor) { Color(r, g, b) },
-                                windowSizeClass = windowSizeClass,
-                                onDismiss = { navController.popBackStack() },
-                                onColorSelected = {
-                                    sampleViewModel.setColor(RGBColor((255 * it.red).toInt(), (255 * it.green).toInt(), (255 * it.blue).toInt()))
-                                }
                             )
                         }
                     }

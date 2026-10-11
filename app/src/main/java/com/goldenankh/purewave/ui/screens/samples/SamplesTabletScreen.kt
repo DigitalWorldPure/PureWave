@@ -27,23 +27,35 @@ package com.goldenankh.purewave.ui.screens.samples
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.goldenankh.domain.model.common.RGBColor
 import com.goldenankh.purewave.R
 import com.goldenankh.purewave.ui.components.dialog.ConfirmDeleteDialog
 import com.goldenankh.purewave.ui.components.list.CommonList
 import com.goldenankh.purewave.ui.components.list.CommonListItem
 import com.goldenankh.purewave.ui.components.list.MasterDetailScreen
+import com.goldenankh.purewave.ui.routing.Routes.CONFIRM_REMOVE
+import com.goldenankh.purewave.ui.routing.Routes.EMPTY
+import com.goldenankh.purewave.ui.routing.Routes.SAMPLE
+import com.goldenankh.purewave.ui.routing.Routes.SAMPLE_EDIT_PROGRAM
 import com.goldenankh.purewave.viewmodel.samples.SamplesViewModel
 
 @Composable
@@ -52,14 +64,16 @@ fun SamplesTabletScreen(
     initiallyEditing: Boolean = false,
     onInitialDetailBack: (() -> Unit)? = null,
     onMenuClick: () -> Unit = {},
-    onDialogClick: (RGBColor) -> Unit,
+    windowSizeClass: WindowSizeClass,
     viewModel: SamplesViewModel = hiltViewModel()
 ) {
+    val navController = rememberNavController()
+
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    var selectedId by remember(initialSelectedId) { mutableStateOf(initialSelectedId) }
-    var editMode by remember(initialSelectedId, initiallyEditing) { mutableStateOf(initiallyEditing) }
-    var programMode by remember { mutableStateOf(false) }
-    var deleteId by remember { mutableLongStateOf(0L) }
+    var selectedId by rememberSaveable(initialSelectedId) { mutableStateOf(initialSelectedId) }
+    var editMode by rememberSaveable(initialSelectedId, initiallyEditing) { mutableStateOf(initiallyEditing) }
+    var programMode by rememberSaveable { mutableStateOf(false) }
+    var deleteId by rememberSaveable { mutableLongStateOf(0L) }
 
     val selectedSample = state.samples.firstOrNull { it.id == selectedId }
 
@@ -100,54 +114,123 @@ fun SamplesTabletScreen(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                if (programMode) {
-                    SampleEditProgramScreen(
-                        sampleId = selectedId,
-                        onBack = {
-                            if (onInitialDetailBack != null && initiallyEditing) {
-                                onInitialDetailBack()
-                            } else {
-                                programMode = false
-                                editMode = true
+
+                NavHost(
+                    navController = navController,
+                    startDestination = EMPTY,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    composable(
+                        route = EMPTY
+                    ) {}
+                    dialog(
+                        route = "${CONFIRM_REMOVE}?id={id}&name={name}",
+                        arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.LongType
+                                defaultValue = -1L
+                            },
+                            navArgument("name") {
+                                type = NavType.StringType
+                                defaultValue = ""
                             }
-                        }
-                    )
-                } else if (editMode) {
-                    SampleScreen(
-                        sampleId = selectedId,
-                        onBack = {
-                            editMode = false
-                            selectedId = null
-                        },
-                        onEditProgram = {
-                            programMode = true
-                        },
-                        onDialogClick = onDialogClick
-                    )
-                } else if (selectedSample != null) {
-                    SampleEditProgramScreen(
-                        sampleId = selectedSample.id,
-                        onBack = { selectedId = null }
-                    )
+                        )
+                    ) { entry ->
+                        val id = entry.arguments?.getLong("id") ?: -1L
+                        val name = entry.arguments?.getString("name") ?: stringResource(R.string.sample_header)
+                        ConfirmDeleteDialog(
+                            title = name ,
+                            onConfirm = {
+                                viewModel.delete(id)
+                                if (selectedId == id) {
+                                    selectedId = null
+                                    editMode = false
+                                    programMode = false
+                                }
+                                deleteId = 0L
+                            },
+                            onDismiss = { deleteId = 0L }
+                        )
+                    }
+                    composable(
+                        route = "${SAMPLE_EDIT_PROGRAM}?id={id}&haveSample={haveSample}",
+                        arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.LongType
+                                defaultValue = -1L
+                            },
+                            navArgument("haveSample") {
+                                type = NavType.BoolType
+                                defaultValue = false
+                            }
+                        )
+                    ) { entry ->
+                        val id = entry.arguments?.getLong("id") ?: -1L
+                        val haveSample = entry.arguments?.getBoolean("haveSample") ?: false
+                        SampleEditProgramScreen(
+                            sampleId = id,
+                            onBack = {
+                                if (haveSample) {
+                                    selectedId = null
+                                }
+                                else if (onInitialDetailBack != null && initiallyEditing) {
+                                    onInitialDetailBack()
+                                } else {
+                                    programMode = false
+                                    editMode = true
+                                }
+                            }
+                        )
+                    }
+
+                    composable(
+                        route = "${SAMPLE}?id={id}",
+                        arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.LongType
+                                defaultValue = -1L
+                            }
+                        )
+                    ) { entry ->
+                        val id = entry.arguments?.getLong("id") ?: -1L
+                        SampleScreen(
+                            sampleId = id,
+                            onBack = {
+                                editMode = false
+                                selectedId = null
+                            },
+                            onEditProgram = {
+                                programMode = true
+                            },
+                            windowSizeClass = windowSizeClass
+                        )
+                    }
                 }
             }
         }
     )
 
+    if (programMode) {
+        navController.navigate(
+            "${SAMPLE_EDIT_PROGRAM}?id=${selectedId ?: -1L}"
+        )
+    } else if (editMode) {
+        navController.navigate(
+            "${SAMPLE}?id=$selectedId"
+        )
+    } else if (selectedSample != null) {
+        navController.navigate(
+            "${SAMPLE_EDIT_PROGRAM}?id=${selectedSample.id}&haveSample=true"
+        )
+    }
+    else {
+        navController.navigate(EMPTY)
+    }
+
     if (deleteId != 0L) {
         val sample = state.samples.firstOrNull { it.id == deleteId }
-        ConfirmDeleteDialog(
-            title = sample?.name ?: "Сэмпл",
-            onConfirm = {
-                viewModel.delete(deleteId)
-                if (selectedId == deleteId) {
-                    selectedId = null
-                    editMode = false
-                    programMode = false
-                }
-                deleteId = 0L
-            },
-            onDismiss = { deleteId = 0L }
+        navController.navigate(
+            "${CONFIRM_REMOVE}?id=${deleteId}&name=${sample?.name}"
         )
     }
 }

@@ -32,17 +32,28 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.goldenankh.purewave.R
 import com.goldenankh.purewave.ui.components.dialog.ConfirmDeleteDialog
 import com.goldenankh.purewave.ui.components.list.CommonList
 import com.goldenankh.purewave.ui.components.list.CommonListItem
 import com.goldenankh.purewave.ui.components.list.MasterDetailScreen
+import com.goldenankh.purewave.ui.routing.Routes.CONFIRM_REMOVE
+import com.goldenankh.purewave.ui.routing.Routes.CURVE
+import com.goldenankh.purewave.ui.routing.Routes.CURVE_EDITOR
+import com.goldenankh.purewave.ui.routing.Routes.EMPTY
 import com.goldenankh.purewave.viewmodel.curves.CurvesViewModel
 
 @Composable
@@ -54,10 +65,12 @@ fun CurvesTabletScreen(
     onEditCurve: (Long?) -> Unit,
     viewModel: CurvesViewModel = hiltViewModel()
 ) {
+    val navController = rememberNavController()
+
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    var selectedId by remember(initialSelectedId) { mutableStateOf(initialSelectedId) }
-    var editMode by remember(initialSelectedId, initiallyEditing) { mutableStateOf(initiallyEditing) }
-    var deleteId by remember { mutableLongStateOf(0L) }
+    var selectedId by rememberSaveable(initialSelectedId) { mutableStateOf(initialSelectedId) }
+    var editMode by rememberSaveable(initialSelectedId, initiallyEditing) { mutableStateOf(initiallyEditing) }
+    var deleteId by rememberSaveable { mutableLongStateOf(0L) }
 
     val selectedCurve = state.curves.firstOrNull { it.id == selectedId }
 
@@ -97,43 +110,99 @@ fun CurvesTabletScreen(
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                if (editMode) {
-                    CurveScreen(
-                        curveId = selectedId,
-                        onBack = {
-                            if (onInitialDetailBack != null && initiallyEditing) {
-                                onInitialDetailBack()
-                            } else {
-                                editMode = false
-                                selectedId = null
+                NavHost(
+                    navController = navController,
+                    startDestination = EMPTY,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    composable(
+                        route = EMPTY
+                    ) {}
+                    dialog(
+                        route = "${CONFIRM_REMOVE}?id={id}&name={name}",
+                        arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.LongType
+                                defaultValue = -1L
+                            },
+                            navArgument("name") {
+                                type = NavType.StringType
+                                defaultValue = ""
                             }
-                        },
-                        onEditCurve = onEditCurve
-                    )
-                } else if (selectedCurve != null) {
-                    CurveEditorScreen(
-                        curveId = selectedCurve.id,
-                        onBack = {
-                            selectedId = null
-                        }
-                    )
+                        )
+                    ) { entry ->
+                        val id = entry.arguments?.getLong("id") ?: -1L
+                        val name = entry.arguments?.getString("name")
+                            ?: stringResource(R.string.curve_header)
+                        ConfirmDeleteDialog(
+                            title = name,
+                            onConfirm = {
+                                viewModel.delete(id)
+                                if (selectedId == id) {
+                                    selectedId = null
+                                }
+                                deleteId = 0L
+                            },
+                            onDismiss = { deleteId = 0L }
+                        )
+                    }
+                    composable(
+                        route = "${CURVE}?id={id}",
+                        arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.LongType
+                                defaultValue = -1L
+                            }
+                        )
+                    ) { entry ->
+                        val id = entry.arguments?.getLong("id") ?: -1L
+                        CurveScreen(
+                            curveId = id,
+                            onBack = {
+                                if (onInitialDetailBack != null && initiallyEditing) {
+                                    onInitialDetailBack()
+                                } else {
+                                    editMode = false
+                                    selectedId = null
+                                }
+                            },
+                            onEditCurve = onEditCurve
+                        )
+                    }
+                    composable(
+                        route = "${CURVE_EDITOR}?id={id}",
+                        arguments = listOf(
+                            navArgument("id") {
+                                type = NavType.LongType
+                                defaultValue = -1L
+                            }
+                        )
+                    ) { entry ->
+                        CurveEditorScreen(
+                            curveId = entry.arguments?.getLong("id"),
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
                 }
             }
+
         }
     )
 
+    if (editMode) {
+        navController.navigate(
+            "${CURVE}?id=$selectedId"
+        )
+    } else if (selectedCurve != null) {
+        navController.navigate(
+            "${CURVE_EDITOR}?id=${selectedCurve.id}"
+        )
+    }
+
     if (deleteId != 0L) {
         val curve = state.curves.firstOrNull { it.id == deleteId }
-        ConfirmDeleteDialog(
-            title = curve?.name ?: stringResource(R.string.curve),
-            onConfirm = {
-                viewModel.delete(deleteId)
-                if (selectedId == deleteId) {
-                    selectedId = null
-                }
-                deleteId = 0L
-            },
-            onDismiss = { deleteId = 0L }
+        navController.navigate(
+            "${CONFIRM_REMOVE}?id=${deleteId}&name=${curve?.name}"
         )
     }
 }

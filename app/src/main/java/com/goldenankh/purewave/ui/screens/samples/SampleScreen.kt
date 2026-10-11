@@ -39,20 +39,30 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.dialog
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.goldenankh.domain.model.common.RGBColor
 import com.goldenankh.purewave.R
+import com.goldenankh.purewave.ui.components.colorpicker.ColorPickerDialog
 import com.goldenankh.purewave.ui.components.iconselector.IconSelector
+import com.goldenankh.purewave.ui.routing.Routes.EMPTY
 import com.goldenankh.purewave.ui.theme.PureWaveTheme
 import com.goldenankh.purewave.viewmodel.samples.SampleViewModel
 
@@ -61,9 +71,10 @@ fun SampleScreen(
     sampleId: Long?,
     onBack: () -> Unit,
     onEditProgram: (Long?) -> Unit,
-    onDialogClick: (RGBColor) -> Unit,
+    windowSizeClass: WindowSizeClass,
     viewModel: SampleViewModel = hiltViewModel(),
 ) {
+    val navController = rememberNavController()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
@@ -156,7 +167,7 @@ fun SampleScreen(
                     .height(48.dp)
                     .background(with(state.color) { Color(r, g, b) })
                     .clickable {
-                        onDialogClick(state.color)
+                        navController.navigate(state.color)
                     }
                     .constrainAs(colorBox) {
                         start.linkTo(labelsEnd, margin = 8.dp)
@@ -235,11 +246,33 @@ fun SampleScreen(
         }
     }
 
+    NavHost(
+        navController = navController,
+        startDestination = EMPTY,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        composable(
+            route = EMPTY
+        ) {}
+        dialog<RGBColor> { backStackEntry ->
+            val initialColor = backStackEntry.toRoute<RGBColor>()
+            ColorPickerDialog(
+                initialColor = with(initialColor) { Color(r, g, b) },
+                windowSizeClass = windowSizeClass,
+                onDismiss = { navController.popBackStack() },
+                onColorSelected = {
+                    viewModel.setColor(RGBColor((255 * it.red).toInt(), (255 * it.green).toInt(), (255 * it.blue).toInt()))
+                }
+            )
+        }
+    }
+
     if(state.saveCompleted) {
         onBack()
     }
 }
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 @Preview
 @Composable
 fun SampleScreenPreview() {
@@ -247,6 +280,6 @@ fun SampleScreenPreview() {
         null,
         {},
         {},
-        {}
+        WindowSizeClass.calculateFromSize(DpSize(320.dp, 500.dp))
     )
 }
