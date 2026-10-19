@@ -29,10 +29,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -46,7 +46,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.goldenankh.domain.model.common.RGBColor
 import com.goldenankh.purewave.R
 import com.goldenankh.purewave.ui.components.dialog.ConfirmDeleteDialog
 import com.goldenankh.purewave.ui.components.list.CommonList
@@ -60,22 +59,21 @@ import com.goldenankh.purewave.viewmodel.samples.SamplesViewModel
 
 @Composable
 fun SamplesTabletScreen(
-    initialSelectedId: Long? = null,
     initiallyEditing: Boolean = false,
+    selectedId: MutableState<Long?>,
+    editMode: MutableState<Boolean>,
+    windowSizeClass: WindowSizeClass,
     onInitialDetailBack: (() -> Unit)? = null,
     onMenuClick: () -> Unit = {},
-    windowSizeClass: WindowSizeClass,
-    viewModel: SamplesViewModel = hiltViewModel()
+    viewModel: SamplesViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    var selectedId by rememberSaveable(initialSelectedId) { mutableStateOf(initialSelectedId) }
-    var editMode by rememberSaveable(initialSelectedId, initiallyEditing) { mutableStateOf(initiallyEditing) }
     var programMode by rememberSaveable { mutableStateOf(false) }
     var deleteId by rememberSaveable { mutableLongStateOf(0L) }
 
-    val selectedSample = state.samples.firstOrNull { it.id == selectedId }
+    val selectedSample = state.samples.firstOrNull { it.id == selectedId.value }
 
     MasterDetailScreen(
         listContent = {
@@ -86,8 +84,8 @@ fun SamplesTabletScreen(
                 onSearchQueryChange = viewModel::setSearchQuery,
                 onMenuClick = onMenuClick,
                 onAddClick = {
-                    selectedId = null
-                    editMode = true
+                    selectedId.value = null
+                    editMode.value = true
                     programMode = false
                 },
                 modifier = Modifier.fillMaxSize()
@@ -95,13 +93,13 @@ fun SamplesTabletScreen(
                 CommonListItem(
                     title = sample.name,
                     onClick = {
-                        selectedId = sample.id
-                        editMode = true
+                        selectedId.value = sample.id
+                        editMode.value = true
                         programMode = false
                     },
                     onEditClick = {
-                        selectedId = sample.id
-                        editMode = true
+                        selectedId.value = sample.id
+                        editMode.value = true
                         programMode = false
                     },
                     onDeleteClick = { deleteId = sample.id }
@@ -142,9 +140,9 @@ fun SamplesTabletScreen(
                             title = name ,
                             onConfirm = {
                                 viewModel.delete(id)
-                                if (selectedId == id) {
-                                    selectedId = null
-                                    editMode = false
+                                if (selectedId.value == id) {
+                                    selectedId.value = null
+                                    editMode.value = false
                                     programMode = false
                                 }
                                 deleteId = 0L
@@ -171,13 +169,13 @@ fun SamplesTabletScreen(
                             sampleId = id,
                             onBack = {
                                 if (haveSample) {
-                                    selectedId = null
+                                    selectedId.value = null
                                 }
                                 else if (onInitialDetailBack != null && initiallyEditing) {
                                     onInitialDetailBack()
                                 } else {
                                     programMode = false
-                                    editMode = true
+                                    editMode.value = true
                                 }
                             }
                         )
@@ -193,11 +191,11 @@ fun SamplesTabletScreen(
                         )
                     ) { entry ->
                         val id = entry.arguments?.getLong("id") ?: -1L
-                        SampleScreen(
+                        SampleTabletScreen(
                             sampleId = id,
                             onBack = {
-                                editMode = false
-                                selectedId = null
+                                editMode.value = false
+                                selectedId.value = null
                             },
                             onEditProgram = {
                                 programMode = true
@@ -210,27 +208,28 @@ fun SamplesTabletScreen(
         }
     )
 
-    if (programMode) {
-        navController.navigate(
-            "${SAMPLE_EDIT_PROGRAM}?id=${selectedId ?: -1L}"
-        )
-    } else if (editMode) {
-        navController.navigate(
-            "${SAMPLE}?id=$selectedId"
-        )
-    } else if (selectedSample != null) {
-        navController.navigate(
-            "${SAMPLE_EDIT_PROGRAM}?id=${selectedSample.id}&haveSample=true"
-        )
-    }
-    else {
-        navController.navigate(EMPTY)
-    }
+    if (navController.currentDestination != null) {
+        if (programMode) {
+            navController.navigate(
+                "${SAMPLE_EDIT_PROGRAM}?id=${selectedId.value ?: -1L}"
+            )
+        } else if (editMode.value) {
+            navController.navigate(
+                "${SAMPLE}?id=${selectedId.value}"
+            )
+        } else if (selectedSample != null) {
+            navController.navigate(
+                "${SAMPLE_EDIT_PROGRAM}?id=${selectedSample.id}&haveSample=true"
+            )
+        } else {
+            navController.navigate(EMPTY)
+        }
 
-    if (deleteId != 0L) {
-        val sample = state.samples.firstOrNull { it.id == deleteId }
-        navController.navigate(
-            "${CONFIRM_REMOVE}?id=${deleteId}&name=${sample?.name}"
-        )
+        if (deleteId != 0L) {
+            val sample = state.samples.firstOrNull { it.id == deleteId }
+            navController.navigate(
+                "${CONFIRM_REMOVE}?id=${deleteId}&name=${sample?.name}"
+            )
+        }
     }
 }

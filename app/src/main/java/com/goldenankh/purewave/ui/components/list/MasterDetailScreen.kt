@@ -29,6 +29,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -40,23 +42,31 @@ fun MasterDetailScreen(
     listContent: @Composable () -> Unit,
     detailContent: @Composable () -> Unit
 ) {
-    Row(modifier = Modifier.fillMaxSize()) {
-        Box(
+    Scaffold(
+        modifier = Modifier.fillMaxSize()
+    ) { padding ->
+        Row(
             modifier = Modifier
-                .weight(0.44f)
-                .fillMaxHeight()
+                .fillMaxSize()
+                .padding(padding)
         ) {
-            listContent()
-        }
+            Box(
+                modifier = Modifier
+                    .weight(0.44f)
+                    .fillMaxHeight()
+            ) {
+                listContent()
+            }
 
-        VerticalDivider()
+            VerticalDivider()
 
-        Box(
-            modifier = Modifier
-                .weight(0.56f)
-                .fillMaxHeight()
-        ) {
-            detailContent()
+            Box(
+                modifier = Modifier
+                    .weight(0.56f)
+                    .fillMaxHeight()
+            ) {
+                detailContent()
+            }
         }
     }
 }

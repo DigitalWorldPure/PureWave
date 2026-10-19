@@ -51,6 +51,7 @@ import com.goldenankh.domain.model.sample.SampleIcon
 
 @Composable
 fun IconSelector(
+    modifier: Modifier = Modifier,
     selectedIcon: SampleIcon?,
     onIconSelected: (SampleIcon?) -> Unit
 ) {
@@ -64,10 +65,7 @@ fun IconSelector(
                 expanded = true
             },
             shape = RectangleShape,
-            modifier = Modifier.size(
-                width = 320.dp,
-                height = 245.dp
-            )
+            modifier = modifier
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically

@@ -98,7 +98,7 @@ fun CurveScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(Modifier.height(44.dp))
+            Spacer(Modifier.height(16.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically

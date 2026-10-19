@@ -27,11 +27,12 @@ package com.goldenankh.purewave.ui.screens.curves
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -58,21 +59,21 @@ import com.goldenankh.purewave.viewmodel.curves.CurvesViewModel
 
 @Composable
 fun CurvesTabletScreen(
-    initialSelectedId: Long? = null,
     initiallyEditing: Boolean = false,
+    windowSizeClass: WindowSizeClass,
+    selectedId: MutableState<Long?>,
+    editMode: MutableState<Boolean>,
     onInitialDetailBack: (() -> Unit)? = null,
     onMenuClick: () -> Unit = {},
     onEditCurve: (Long?) -> Unit,
-    viewModel: CurvesViewModel = hiltViewModel()
+    viewModel: CurvesViewModel = hiltViewModel(),
 ) {
     val navController = rememberNavController()
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    var selectedId by rememberSaveable(initialSelectedId) { mutableStateOf(initialSelectedId) }
-    var editMode by rememberSaveable(initialSelectedId, initiallyEditing) { mutableStateOf(initiallyEditing) }
     var deleteId by rememberSaveable { mutableLongStateOf(0L) }
 
-    val selectedCurve = state.curves.firstOrNull { it.id == selectedId }
+    val selectedCurve = state.curves.firstOrNull { it.id == selectedId.value }
 
     MasterDetailScreen(
         listContent = {
@@ -83,20 +84,20 @@ fun CurvesTabletScreen(
                 onSearchQueryChange = viewModel::setSearchQuery,
                 onMenuClick = onMenuClick,
                 onAddClick = {
-                    selectedId = null
-                    editMode = true
+                    selectedId.value = null
+                    editMode.value = true
                 },
                 modifier = Modifier.fillMaxSize()
             ) { curve ->
                 CommonListItem(
                     title = curve.name,
                     onClick = {
-                        selectedId = curve.id
-                        editMode = false
+                        selectedId.value = curve.id
+                        editMode.value = false
                     },
                     onEditClick = {
-                        selectedId = curve.id
-                        editMode = true
+                        selectedId.value = curve.id
+                        editMode.value = true
                     },
                     onDeleteClick = {
                         deleteId = curve.id
@@ -138,8 +139,8 @@ fun CurvesTabletScreen(
                             title = name,
                             onConfirm = {
                                 viewModel.delete(id)
-                                if (selectedId == id) {
-                                    selectedId = null
+                                if (selectedId.value == id) {
+                                    selectedId.value = null
                                 }
                                 deleteId = 0L
                             },
@@ -156,14 +157,15 @@ fun CurvesTabletScreen(
                         )
                     ) { entry ->
                         val id = entry.arguments?.getLong("id") ?: -1L
-                        CurveScreen(
+                        CurveTabletScreen(
                             curveId = id,
+                            windowSizeClass = windowSizeClass,
                             onBack = {
                                 if (onInitialDetailBack != null && initiallyEditing) {
                                     onInitialDetailBack()
                                 } else {
-                                    editMode = false
-                                    selectedId = null
+                                    editMode.value = false
+                                    selectedId.value = null
                                 }
                             },
                             onEditCurve = onEditCurve
@@ -189,20 +191,24 @@ fun CurvesTabletScreen(
         }
     )
 
-    if (editMode) {
-        navController.navigate(
-            "${CURVE}?id=$selectedId"
-        )
-    } else if (selectedCurve != null) {
-        navController.navigate(
-            "${CURVE_EDITOR}?id=${selectedCurve.id}"
-        )
-    }
+    if (navController.currentDestination != null) {
+        if (editMode.value) {
+            navController.navigate(
+                "${CURVE}?id=${selectedId.value}"
+            )
+        } else if (selectedCurve != null) {
+            navController.navigate(
+                "${CURVE_EDITOR}?id=${selectedCurve.id}"
+            )
+        } else {
+            navController.navigate(EMPTY)
+        }
 
-    if (deleteId != 0L) {
-        val curve = state.curves.firstOrNull { it.id == deleteId }
-        navController.navigate(
-            "${CONFIRM_REMOVE}?id=${deleteId}&name=${curve?.name}"
-        )
+        if (deleteId != 0L) {
+            val curve = state.curves.firstOrNull { it.id == deleteId }
+            navController.navigate(
+                "${CONFIRM_REMOVE}?id=${deleteId}&name=${curve?.name}"
+            )
+        }
     }
 }
