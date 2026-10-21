@@ -44,8 +44,13 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -59,6 +64,7 @@ import com.goldenankh.purewave.ui.components.animatedLogo.AnimatedLogo
 import com.goldenankh.purewave.ui.components.animatedwave.AnimatedWave
 import com.goldenankh.purewave.ui.components.crystal.Crystal
 import com.goldenankh.purewave.ui.theme.PureWaveTheme
+import com.goldenankh.purewave.ui.tools.saver
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.milliseconds
@@ -68,8 +74,19 @@ fun SplashScreen(
     onFinished: () -> Unit,
     windowSizeClass: WindowSizeClass
 ) {
-    val offsetX = remember { Animatable(-1000f) }
-    val animatedScale = remember { Animatable(1f) }
+    var currentValue by rememberSaveable { mutableIntStateOf(0) }
+    var isPlaying by rememberSaveable { mutableStateOf(false) }
+    var isPlayingCompleted by rememberSaveable { mutableStateOf(false) }
+
+    var mPlayer: MediaPlayer? = null
+
+    val offsetX = rememberSaveable(saver = saver) {
+        Animatable(-1000f)
+    }
+
+    val animatedScale = rememberSaveable(saver = saver) {
+        Animatable(1f)
+    }
     val context = LocalContext.current
 
     val logoWeightPadding = when (windowSizeClass.widthSizeClass) {
@@ -78,17 +95,34 @@ fun SplashScreen(
         else -> 0.05f
     }
 
+    DisposableEffect(Unit) {
+        onDispose {
+            isPlaying = mPlayer?.isPlaying == true
+            currentValue = mPlayer?.currentPosition ?: 0
+            mPlayer?.release()
+        }
+    }
+
     LaunchedEffect(Unit) {
         // Play sound
         val mediaPlayer = MediaPlayer.create(
             context,
             R.raw.crystal_sound
         )
+        mPlayer = mediaPlayer
 
-        mediaPlayer.start()
+        if (!isPlayingCompleted) {
+            if (isPlaying) {
+                mediaPlayer.seekTo(currentValue)
+            }
+            mediaPlayer.start()
 
-        mediaPlayer.setOnCompletionListener {
-            it.release()
+            mediaPlayer.currentPosition
+
+            mediaPlayer.setOnCompletionListener {
+                it.release()
+                isPlayingCompleted = true
+            }
         }
 
         //Animating the movement of the label from the invisible area on the left side of the screen

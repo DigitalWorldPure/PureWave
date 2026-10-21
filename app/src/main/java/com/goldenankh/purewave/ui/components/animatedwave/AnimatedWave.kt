@@ -31,6 +31,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
@@ -40,6 +41,7 @@ import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.tooling.preview.Preview
+import com.goldenankh.purewave.ui.tools.saver
 import kotlin.math.min
 
 @Composable
@@ -57,7 +59,7 @@ fun AnimatedWave(
     // 1. Wave animation progress
     // =========================================================
 
-    val progress = remember {
+    val progress = rememberSaveable(saver = saver) {
         Animatable(0f)
     }
 
@@ -66,7 +68,7 @@ fun AnimatedWave(
     // 2. Shine animation progress
     // =========================================================
 
-    val shineProgress = remember {
+    val shineProgress = rememberSaveable(saver = saver) {
         Animatable(0f)
     }
 

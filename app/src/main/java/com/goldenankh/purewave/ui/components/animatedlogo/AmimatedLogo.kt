@@ -35,6 +35,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -47,6 +48,7 @@ import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.graphics.vector.PathParser
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.goldenankh.purewave.ui.tools.saver
 
 @Composable
 fun AnimatedLogo(
@@ -57,11 +59,11 @@ fun AnimatedLogo(
     fadeInDuration: Int = 700,
     gradientDuration: Int = 1200
 ) {
-    val alpha = remember {
+    val alpha = rememberSaveable(saver = saver) {
         Animatable(0f)
     }
 
-    val gradientProgress = remember {
+    val gradientProgress = rememberSaveable(saver = saver) {
         Animatable(0f)
     }
 
