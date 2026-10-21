@@ -31,6 +31,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -153,21 +154,27 @@ fun MainScreen(
                     CurvesScreen(
                         onMenuClick = openMenuAction,
                         onAddClick = {
+                            selectedCurveIdState.value = null
+                            editCurveModeState.value = true
                             navController.navigate("${CURVE}?id=-1")
                         },
                         onCurveClick = { id ->
+                            selectedCurveIdState.value = id
+                            editCurveModeState.value = true
                             navController.navigate(
                                 "${CURVE_EDITOR}?id=$id"
                             )
                         },
                         onEditClick = { id ->
+                            selectedCurveIdState.value = id
+                            editCurveModeState.value = true
                             navController.navigate(
                                 "${CURVE}?id=$id"
                             )
                         }
                     )
-                    if (editCurveModeState.value) {
-                        if (navController.currentDestination?.route != "${CURVE}?id={id}") {
+                    LaunchedEffect(Unit) {
+                        if (editCurveModeState.value) {
                             navController.navigate(
                                 "${CURVE}?id=${selectedCurveIdState.value}"
                             )
@@ -219,14 +226,20 @@ fun MainScreen(
                     CurvesScreen(
                         onMenuClick = openMenuAction,
                         onAddClick = {
+                            selectedCurveIdState.value = null
+                            editCurveModeState.value = true
                             navController.navigate("${CURVE}?id=-1")
                         },
                         onCurveClick = { id ->
+                            selectedCurveIdState.value = id
+                            editCurveModeState.value = true
                             navController.navigate(
                                 "${CURVE_EDITOR}?id=$id"
                             )
                         },
                         onEditClick = { id ->
+                            selectedCurveIdState.value = id
+                            editCurveModeState.value = true
                             navController.navigate(
                                 "${CURVE}?id=$id"
                             )
@@ -276,23 +289,29 @@ fun MainScreen(
                     SamplesScreen(
                         onMenuClick = openMenuAction,
                         onAddClick = {
+                            selectedSampleIdState.value = null
+                            editSampleModeState.value = true
                             navController.navigate(
                                 "${SAMPLE}?id=-1"
                             )
                         },
                         onSampleClick = { id ->
+                            selectedSampleIdState.value = id
+                            editSampleModeState.value = true
                             navController.navigate(
                                 "${SAMPLE}?id=$id"
                             )
                         },
                         onEditClick = { id ->
+                            selectedSampleIdState.value = id
+                            editSampleModeState.value = true
                             navController.navigate(
                                 "${SAMPLE}?id=$id"
                             )
                         }
                     )
-                    if (editSampleModeState.value) {
-                        if (navController.currentDestination?.route != "${SAMPLE}?id={id}") {
+                    LaunchedEffect(Unit) {
+                        if (editSampleModeState.value) {
                             navController.navigate(
                                 "${SAMPLE}?id=${selectedSampleIdState.value}"
                             )
@@ -342,16 +361,22 @@ fun MainScreen(
                     SamplesScreen(
                         onMenuClick = openMenuAction,
                         onAddClick = {
+                            selectedSampleIdState.value = null
+                            editSampleModeState.value = true
                             navController.navigate(
                                 "${SAMPLE}?id=-1"
                             )
                         },
                         onSampleClick = { id ->
+                            selectedSampleIdState.value = id
+                            editSampleModeState.value = true
                             navController.navigate(
                                 "${SAMPLE}?id=$id"
                             )
                         },
                         onEditClick = { id ->
+                            selectedSampleIdState.value = id
+                            editSampleModeState.value = true
                             navController.navigate(
                                 "${SAMPLE}?id=$id"
                             )
