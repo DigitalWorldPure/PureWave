@@ -3,6 +3,7 @@ package com.goldenankh.purewave.ui.routing
 object Routes {
     const val EMPTY = "empty"
     const val SPLASH = "splash"
+    const val MAIN = "MAIN"
     const val TRACKS = "tracks"
     const val SAMPLES = "samples"
     const val SAMPLE = "sample"

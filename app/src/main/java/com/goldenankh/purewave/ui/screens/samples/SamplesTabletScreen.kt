@@ -30,9 +30,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -43,6 +45,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
@@ -74,6 +77,9 @@ fun SamplesTabletScreen(
     var deleteId by rememberSaveable { mutableLongStateOf(0L) }
 
     val selectedSample = state.samples.firstOrNull { it.id == selectedId.value }
+
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+    val isNavControllerHaveDestination by remember { derivedStateOf { currentBackStackEntry != null } }
 
     MasterDetailScreen(
         listContent = {
@@ -208,7 +214,7 @@ fun SamplesTabletScreen(
         }
     )
 
-    if (navController.currentDestination != null) {
+    if (isNavControllerHaveDestination) {
         if (programMode) {
             navController.navigate(
                 "${SAMPLE_EDIT_PROGRAM}?id=${selectedId.value ?: -1L}"
@@ -222,7 +228,13 @@ fun SamplesTabletScreen(
                 "${SAMPLE_EDIT_PROGRAM}?id=${selectedSample.id}&haveSample=true"
             )
         } else {
-            navController.navigate(EMPTY)
+            navController.navigate(EMPTY) {
+                navController.currentDestination?.let {
+                    popUpTo(it.id) {
+                        inclusive = true
+                    }
+                }
+            }
         }
 
         if (deleteId != 0L) {
