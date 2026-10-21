@@ -200,7 +200,7 @@ fun MainScreen(
                             )
                         },
                     )
-                } else {
+                } else if (editCurveModeState.value) {
                     CurveScreen(
                         curveId = id.takeIf { it >= 0L },
                         onBack = {
@@ -211,6 +211,24 @@ fun MainScreen(
                         onEditCurve = { id ->
                             navController.navigate(
                                 "${CURVE_EDITOR}?id=$id"
+                            )
+                        }
+                    )
+                }
+                else {
+                    CurvesScreen(
+                        onMenuClick = openMenuAction,
+                        onAddClick = {
+                            navController.navigate("${CURVE}?id=-1")
+                        },
+                        onCurveClick = { id ->
+                            navController.navigate(
+                                "${CURVE_EDITOR}?id=$id"
+                            )
+                        },
+                        onEditClick = { id ->
+                            navController.navigate(
+                                "${CURVE}?id=$id"
                             )
                         }
                     )
@@ -304,7 +322,7 @@ fun MainScreen(
                         onMenuClick = openMenuAction,
                         windowSizeClass = windowSizeClass
                     )
-                } else {
+                } else if (editSampleModeState.value) {
                     SampleScreen(
                         sampleId = id.takeIf { it >= 0L },
                         onBack = {
@@ -318,6 +336,26 @@ fun MainScreen(
                             )
                         },
                         windowSizeClass = windowSizeClass
+                    )
+                }
+                else {
+                    SamplesScreen(
+                        onMenuClick = openMenuAction,
+                        onAddClick = {
+                            navController.navigate(
+                                "${SAMPLE}?id=-1"
+                            )
+                        },
+                        onSampleClick = { id ->
+                            navController.navigate(
+                                "${SAMPLE}?id=$id"
+                            )
+                        },
+                        onEditClick = { id ->
+                            navController.navigate(
+                                "${SAMPLE}?id=$id"
+                            )
+                        }
                     )
                 }
             }

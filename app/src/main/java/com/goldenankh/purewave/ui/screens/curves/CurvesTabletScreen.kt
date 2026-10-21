@@ -167,12 +167,8 @@ fun CurvesTabletScreen(
                             curveId = id,
                             windowSizeClass = windowSizeClass,
                             onBack = {
-                                if (onInitialDetailBack != null && initiallyEditing) {
-                                    onInitialDetailBack()
-                                } else {
-                                    editMode.value = false
-                                    selectedId.value = null
-                                }
+                                editMode.value = false
+                                selectedId.value = null
                             },
                             onEditCurve = onEditCurve
                         )

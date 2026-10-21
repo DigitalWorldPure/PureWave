@@ -200,8 +200,8 @@ fun SamplesTabletScreen(
                         SampleTabletScreen(
                             sampleId = id,
                             onBack = {
-                                editMode.value = false
                                 selectedId.value = null
+                                editMode.value = false
                             },
                             onEditProgram = {
                                 programMode = true
